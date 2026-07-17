@@ -12,7 +12,28 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.VitaEquip">
         <activity
-            android:name=".MainActivity"
+            android:name=".ui.main.fragments.reportes.form.ReporteFormActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.scanner.QrScannerActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.equipos.form.EquipoFormActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.equipos.detail.EquipoDetailActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.main.fragments.equipos.list.EquipoListActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.main.fragments.dashboard.DashboardActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.roleselect.RoleSelectActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.main.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

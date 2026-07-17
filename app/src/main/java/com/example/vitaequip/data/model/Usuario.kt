@@ -1,4 +1,4 @@
 package com.example.vitaequip.data.model
 
-class Ubicaciones {
+class Usuario {
 }
