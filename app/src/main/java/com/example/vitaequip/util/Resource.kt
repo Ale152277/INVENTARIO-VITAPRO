@@ -1,4 +1,8 @@
 package com.example.vitaequip.util
 
-class Resource {
+sealed class Resource <out T>{
+    object Loading: Resource<Nothing>()
+
+    data class Success<T>(val data: T): Resource<T>()
+    data class Error(val mensaje: String): Resource<Nothing>()
 }

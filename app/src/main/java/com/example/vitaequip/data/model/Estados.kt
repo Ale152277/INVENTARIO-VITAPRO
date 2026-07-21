@@ -1,4 +1,9 @@
 package com.example.vitaequip.data.model
-//estados
-class Estados {
+import kotlinx.serialization.Serializable
+
+@Serializable
+data class Estados(
+    val id: Int,
+    val nombre: String
+) {
 }

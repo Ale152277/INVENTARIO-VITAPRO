@@ -1,4 +1,8 @@
 package com.example.vitaequip.data.model
+import kotlinx.serialization.Serializable
 
-class Marcas {
-}
+@Serializable
+data class Marcas (
+    val id: Int,
+    val nombre: String
+)
