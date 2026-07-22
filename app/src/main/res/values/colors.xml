@@ -1,5 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
+    <!-- Marca / gradiente principal -->
+    <color name="azul_oscuro">#0D3B54</color>
+    <color name="azul_medio">#1B6E8C</color>
+    <color name="teal_claro">#2FD4C4</color>
+
+    <!-- Superficies -->
+    <color name="fondo_claro">#F4F7F9</color>
+    <color name="blanco">#FFFFFF</color>
+    <color name="gris_texto">#6B7280</color>
+    <color name="gris_borde">#D1D5DB</color>
+
+    <!-- Estados de equipos -->
+    <color name="estado_operativo">#22C55E</color>
+    <color name="estado_mantenimiento">#EAB308</color>
+    <color name="estado_fuera_servicio">#EF4444</color>
+
+    <!-- Notificaciones (fondo suave de cada tipo) -->
+    <color name="notif_alerta_fondo">#FCE4E4</color>
+    <color name="notif_mantenimiento_fondo">#F5F0C9</color>
+    <color name="notif_info_fondo">#D9EAF7</color>
+
+    <!-- Negro / Negro suave-->
+    <color name="negro">#000000</color>
+    <color name="negro_suave">#1A1A1A</color>
 </resources>

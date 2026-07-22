@@ -1,5 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">VitaEquip</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <!-- Selección de acceso -->
+    <string name="seleccionar_acceso">Seleccionar acceso</string>
+    <string name="admin_login">Admin Login</string>
+    <string name="admin_login_desc">Gestión de dispositivos</string>
+    <string name="user_login">User Login</string>
+    <string name="user_login_desc">Escaneo y detalles</string>
+    <string name="acceso_restringido">El acceso es solo para personal autorizado, si necesitas solicitar acceso puedes contactarnos</string>
+    <string name="idioma_espanol">Español</string>
+
+    <!-- Login -->
+    <string name="bienvenido">Bienvenido</string>
+    <string name="ingresa_tu_cuenta">Ingresa a tu cuenta</string>
+    <string name="correo_electronico">Correo Electrónico</string>
+    <string name="correo_hint">example@gmail.com</string>
+    <string name="contrasena">Contraseña</string>
+    <string name="olvidaste_contrasena">¿Olvidaste tu contraseña?</string>
+    <string name="iniciar_sesion">Iniciar sesión</string>
+
+    <!-- Dashboard -->
+    <string name="panel_admin">PANEL ADMIN</string>
+    <string name="hola_usuario">Hola, %1$s</string>
+    <string name="buscar_dispositivos">Buscar dispositivos…</string>
+    <string name="filtro_avanzado">Filtro Avanzado</string>
+    <string name="area">Área</string>
+    <string name="piso">Piso</string>
+    <string name="salas">Salas</string>
+    <string name="estaciones">Estaciones</string>
+
+    <string name="total_equipos">Total equipos</string>
+    <string name="total_equipos_desc">en inventario</string>
+    <string name="operativos">Operativos</string>
+    <string name="operativos_desc">%1$d%% del total</string>
+    <string name="mantenimiento">Mantenimiento</string>
+    <string name="mantenimiento_desc">en proceso</string>
+    <string name="fuera_servicio">Fuera de servicio</string>
+    <string name="fuera_servicio_desc">requiere atención</string>
+
+    <string name="proximos_mantenimientos">PRÓXIMOS MANTENIMIENTOS</string>
+    <string name="dias_restantes">%1$dd</string>
+    <string name="acciones_rapidas">ACCIONES RÁPIDAS</string>
+    <string name="registrar_equipo">Registrar equipo</string>
+    <string name="registrar_equipo_desc">Agregar nuevo</string>
+    <string name="estado_inventario">ESTADO DEL INVENTARIO</string>
+
+    <!-- Notificaciones -->
+    <string name="notificaciones">Notificaciones</string>
+    <string name="notif_bateria_alerta">Batería %1$s en Alerta</string>
+    <string name="notif_voltaje_bajo">Voltaje por debajo del umbral mínimo</string>
+    <string name="notif_mantenimiento_programado">%1$s — Mantenimiento</string>
+    <string name="notif_programado_para">Programado para %1$s</string>
+    <string name="notif_nuevo_dispositivo">Nuevo dispositivo registrado</string>
+
+    <!-- Directorio de equipos -->
+    <string name="directorio_equipos">Directorio de Equipos</string>
+    <string name="todas_las_marcas">Todas las marcas</string>
+    <string name="todas_las_areas">Todas las áreas</string>
+    <string name="nuevo">Nuevo</string>
+    <string name="equipos_encontrados">%1$d equipos encontrados</string>
+    <string name="editar">Editar</string>
+    <string name="historial">Historial</string>
+
+    <!-- Estados (badges) -->
+    <string name="estado_operativo">Operativo</string>
+    <string name="estado_mantenimiento">Mantenimiento</string>
+    <string name="estado_fuera_servicio">Fuera de Servicio</string>
+
+    <!-- Formulario Editar/Registrar equipo -->
+    <string name="editar_equipo">Editar Equipo</string>
+    <string name="registrar_equipo_titulo">Registrar Equipo</string>
+    <string name="seccion_general">General</string>
+    <string name="codigo">Código</string>
+    <string name="descripcion">Descripción</string>
+    <string name="descripcion_hint">Nombre del equipo</string>
+    <string name="marca">Marca</string>
+    <string name="modelo">Modelo</string>
+    <string name="seccion_especificaciones">Especificaciones Técnicas</string>
+    <string name="potencia">Potencia (kW)</string>
+    <string name="voltaje_bateria">Voltaje Bat. (V)</string>
+    <string name="amperaje">Amperaje (A)</string>
+    <string name="numero_baterias">Nº Baterías</string>
+    <string name="seccion_ubicacion_estado">Ubicación y Estado</string>
+    <string name="nivel">Nivel</string>
+    <string name="seleccionar_nivel">Seleccionar nivel</string>
+    <string name="seleccionar_area">Seleccionar área</string>
+    <string name="ubicacion_especifica">Ubicación específica</string>
+    <string name="seleccionar_ubicacion">Seleccionar ubicación</string>
+    <string name="estado">Estado</string>
+    <string name="fecha_ultimo_mantenimiento">Fecha de último mantenimiento</string>
+    <string name="fecha_proximo_mantenimiento">Fecha de próximo mantenimiento</string>
+    <string name="guardar_cambios">Guardar cambios</string>
+
+    <!-- Historial de movimientos -->
+    <string name="historial_movimientos">Historial de Movimientos</string>
+    <string name="autorizado_por">Autorizado por: %1$s</string>
+
+    <!-- Errores y validaciones -->
+    <string name="error_codigo_obligatorio">El código es obligatorio</string>
+    <string name="error_descripcion_obligatoria">La descripción es obligatoria</string>
+    <string name="error_estado_obligatorio">Debes seleccionar un estado</string>
+    <string name="error_usuario_no_registrado">Usuario no registrado en el sistema.</string>
+    <string name="error_usuario_inactivo">Este usuario está inactivo.</string>
+    <string name="error_generico">Ocurrió un error. Inténtalo de nuevo.</string>
 </resources>
