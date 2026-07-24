@@ -1,4 +1,6 @@
 package com.example.vitaequip.util
 
-class Constants {
+object Constants {
+
+    const val EXTRA_ROL_SELECCIONADO = "extra_rol_seleccionado"
 }

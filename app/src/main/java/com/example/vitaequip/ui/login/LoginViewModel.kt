@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.vitaequip.data.model.RolUsuario
 import com.example.vitaequip.data.model.Usuario
 import com.example.vitaequip.data.remote.SupabaseClient
 import com.example.vitaequip.data.repository.UsuarioRepository
@@ -20,7 +21,7 @@ class LoginViewModel : ViewModel(){
     private val _loginState = MutableLiveData<Resource<Usuario>>()
     val loginState: LiveData<Resource<Usuario>> = _loginState
 
-    fun iniciarSesion(correo: String, contrasena: String){
+    fun iniciarSesion(correo: String, contrasena: String, rolEsperado: RolUsuario){
         _loginState.value = Resource.Loading
 
         viewModelScope.launch {

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/dashboardFragment">
+
+    <fragment
+        android:id="@+id/dashboardFragment"
+        android:name="com.example.vitaequip.ui.main.fragments.dashboard.DashboardFragment"
+        android:label="@string/nav_dashboard"
+        tools:layout="@layout/fragment_dashboard"
+        />
+
+    <fragment
+        android:id="@+id/equipoListFragment"
+        android:name="com.example.vitaequip.ui.main.fragments.equipos.list.EquipoListFragment"
+        android:label="@string/nav_equipos"
+        tools:layout="@layout/fragment_equipo_list"
+        />
+
+    <fragment
+        android:id="@+id/notificacionesFragment"
+        android:name="com.example.vitaequip.ui.main.fragments.notificaciones.NotificacionesFragment"
+        android:label="@string/nav_notificaciones"
+        tools:layout="@layout/fragment_notificaciones"
+        />
+
+    <fragment
+        android:id="@+id/reporteListFragment"
+        android:name="com.example.vitaequip.ui.main.fragments.reportes.list.ReporteListFragment"
+        android:label="@string/nav_reportes"
+        tools:layout="@layout/fragment_reporte_list"
+        />
+
+</navigation>

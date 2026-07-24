@@ -6,7 +6,7 @@ import kotlinx.serialization.Serializable
 enum class RolUsuario{
     @SerialName("ADMIN")
     ADMIN,
-    @SerialName("Lector")
+    @SerialName("LECTOR")
     LECTOR
 }
 

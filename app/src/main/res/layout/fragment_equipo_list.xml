@@ -3,7 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.main.fragments.equipos.list.EquipoListFragment">
+    tools:context=".ui.main.fragments.equipos.list.EquipoListFragment"
+    android:id="@+id/equipoListFragment">
 
     <!-- TODO: Update blank fragment layout -->
     <TextView

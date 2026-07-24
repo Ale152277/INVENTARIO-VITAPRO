@@ -104,4 +104,12 @@
     <string name="error_usuario_no_registrado">User not registered in the system.</string>
     <string name="error_usuario_inactivo">This user is inactive.</string>
     <string name="error_generico">Something went wrong. Please try again.</string>
+
+    <!-- Navigation-->
+    <string name="nav_dashboard">Dashboard</string>
+    <string name="nav_equipos">Devices</string>
+    <string name="nav_notificaciones">Notifications</string>
+    <string name="nav_reportes">Reports</string>
+
+    <string name="cerrar_sesion">Log Out</string>
 </resources>

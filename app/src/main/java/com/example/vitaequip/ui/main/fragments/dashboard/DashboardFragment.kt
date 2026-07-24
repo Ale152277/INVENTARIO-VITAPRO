@@ -1,60 +1,86 @@
 package com.example.vitaequip.ui.main.fragments.dashboard
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.example.vitaequip.R
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.vitaequip.databinding.FragmentDashboardBinding
+import com.example.vitaequip.ui.equipos.form.EquipoFormActivity
+import com.example.vitaequip.ui.main.MainActivity
+import com.example.vitaequip.util.Resource
+import com.example.vitaequip.util.SessionManager
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [DashboardFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class DashboardFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
+    private var _binding: FragmentDashboardBinding? = null
+    private val binding get() = _binding!!
+
+    private val viewModel: DashboardViewModel by viewModels()
+    private lateinit var proximosAdapter: ProximoMantenimientoAdapter
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_dashboard, container, false)
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
+    ): View {
+        _binding = FragmentDashboardBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment DashboardFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            DashboardFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        binding.btnMenu.setOnClickListener {
+            (activity as? MainActivity)?.abrirDrawer()
+        }
+
+        proximosAdapter = ProximoMantenimientoAdapter()
+        binding.rvProximosMantenimientos.layoutManager = LinearLayoutManager(requireContext())
+        binding.rvProximosMantenimientos.adapter = proximosAdapter
+
+        binding.btnRegistrarEquipo.visibility =
+            if (SessionManager.esAdmin()) View.VISIBLE else View.GONE
+
+        binding.accionesRapidas.visibility =
+            if(!SessionManager.esAdmin()) View.GONE else View.VISIBLE
+
+        binding.btnRegistrarEquipo.setOnClickListener {
+            startActivity(android.content.Intent(requireContext(), EquipoFormActivity::class.java))
+        }
+
+        viewModel.resumen.observe(viewLifecycleOwner) { resource ->
+            when (resource) {
+                is Resource.Loading -> {
+                    binding.progressDashboard.visibility = View.VISIBLE
+                    binding.contenidoDashboard.visibility = View.GONE
+                }
+                is Resource.Success -> {
+                    binding.progressDashboard.visibility = View.GONE
+                    binding.contenidoDashboard.visibility = View.VISIBLE
+
+                    val resumen = resource.data
+                    binding.tvTotalEquipos.text = resumen.totalEquipos.toString()
+                    binding.tvOperativos.text = resumen.operativos.toString()
+                    binding.tvPorcentajeOperativos.text =
+                        getString(com.example.vitaequip.R.string.operativos_desc, resumen.porcentajeOperativos)
+                    binding.tvMantenimiento.text = resumen.mantenimiento.toString()
+                    binding.tvFueraServicio.text = resumen.fueraDeServicio.toString()
+
+                    proximosAdapter.actualizarLista(resumen.proximosMantenimientos)
+                }
+                is Resource.Error -> {
+                    binding.progressDashboard.visibility = View.GONE
+                    android.widget.Toast.makeText(requireContext(), resource.mensaje, android.widget.Toast.LENGTH_SHORT).show()
                 }
             }
+        }
+
+        viewModel.cargarResumen()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }
