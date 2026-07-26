@@ -1,60 +1,128 @@
 package com.example.vitaequip.ui.main.fragments.equipos.list
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
+import android.widget.AdapterView
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.vitaequip.R
+import com.example.vitaequip.databinding.FragmentEquipoListBinding
+import com.example.vitaequip.ui.equipos.detail.EquipoDetailActivity
+import com.example.vitaequip.ui.equipos.form.EquipoFormActivity
+import com.example.vitaequip.util.Constants
+import com.example.vitaequip.util.Resource
+import androidx.core.widget.addTextChangedListener
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [EquipoListFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class EquipoListFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
+    private var _binding : FragmentEquipoListBinding? = null
+    private val binding get() = _binding!!
+
+    private val viewModel : EquipoListViewModel by viewModels()
+    private lateinit var adapter: EquipoListAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_equipo_list, container, false)
+    ): View {
+        _binding = FragmentEquipoListBinding.inflate(inflater, container, false)
+        return binding.root
+
+
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment EquipoListFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            EquipoListFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        adapter = EquipoListAdapter(
+            onEditarClick = { equipo ->
+                val intent = android.content.Intent(requireContext(), EquipoFormActivity::class.java)
+                intent.putExtra(Constants.EXTRA_EQUIPO_ID, equipo.id)
+                startActivity(intent)
+
+            },
+
+            onHistorialClick = {equipo ->
+                val intent = android.content.Intent(requireContext(), EquipoDetailActivity::class.java)
+                intent.putExtra(Constants.EXTRA_EQUIPO_ID, equipo.id)
+                startActivity(intent)
+
+
+            }
+        )
+
+
+        binding.rvEquipos.layoutManager = LinearLayoutManager(requireContext())
+        binding.rvEquipos.adapter = adapter
+
+        binding.etBuscar.addTextChangedListener { texto ->
+            viewModel.buscar(texto?.toString() ?: "")
+        }
+
+        binding.btnNuevo.setOnClickListener {
+            startActivity(android.content.Intent(requireContext(), EquipoFormActivity::class.java))
+        }
+
+
+        viewModel.marcasFiltro.observe(viewLifecycleOwner) { marcas ->
+            val nombres = listOf(getString(R.string.todas_las_marcas)) + marcas.map { it.nombre }
+            binding.spinnerMarca.adapter = ArrayAdapter(
+                requireContext(), android.R.layout.simple_spinner_dropdown_item, nombres
+            )
+            binding.spinnerMarca.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+                override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                    viewModel.filtrarPorMarca(if (position == 0) null else marcas[position - 1].id)
+                }
+                override fun onNothingSelected(parent: AdapterView<*>?) {}
+            }
+        }
+
+        viewModel.areasFiltro.observe(viewLifecycleOwner) { areas ->
+            val nombres = listOf(getString(R.string.todas_las_areas)) + areas.map { it.nombre }
+            binding.spinnerArea.adapter = ArrayAdapter(
+                requireContext(), android.R.layout.simple_spinner_dropdown_item, nombres
+            )
+            binding.spinnerArea.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+                override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                    viewModel.filtrarPorArea(if (position == 0) null else areas[position - 1].id)
+                }
+                override fun onNothingSelected(parent: AdapterView<*>?) {}
+            }
+        }
+
+        viewModel.equipos.observe(viewLifecycleOwner) { resource ->
+            when (resource) {
+                is Resource.Loading -> {
+                    binding.progressEquipos.visibility = View.VISIBLE
+                }
+                is Resource.Success -> {
+                    binding.progressEquipos.visibility = View.GONE
+                    adapter.actualizarLista(resource.data)
+                    binding.tvEquiposEncontrados.text =
+                        getString(R.string.equipos_encontrados, resource.data.size)
+                }
+                is Resource.Error -> {
+                    binding.progressEquipos.visibility = View.GONE
+                    android.widget.Toast.makeText(requireContext(), resource.mensaje, android.widget.Toast.LENGTH_SHORT).show()
                 }
             }
+        }
+
+        viewModel.cargarEquipos()
     }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
+
 }
+
+
+
+

@@ -5,18 +5,35 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.vitaequip.data.model.Equipo
+import com.example.vitaequip.data.model.Marcas
+import com.example.vitaequip.data.model.Area
+import com.example.vitaequip.data.repository.AreaRepository
 import com.example.vitaequip.data.repository.EquipoRepository
+import com.example.vitaequip.data.repository.EstadoRepository
+import com.example.vitaequip.data.repository.MarcaRepository
 import com.example.vitaequip.util.Resource
 import kotlinx.coroutines.launch
 
 class EquipoListViewModel : ViewModel(){
 
-    private val repository = EquipoRepository()
+    private val equipoRepository = EquipoRepository()
+    private val marcaRepository = MarcaRepository()
+    private val estadoRepository = EstadoRepository()
+    private val areaRepository = AreaRepository()
 
     private var listaCompleta: List <Equipo> = emptyList()
+    private var marcas: List<Marcas> =emptyList()
+    private var areas: List<Area> = emptyList()
+    private var estadosMap: Map<Int, String> = emptyMap()
 
-    private val _equipos = MutableLiveData<Resource<List<Equipo>>>()
-    val equipos: LiveData<Resource<List<Equipo>>> = _equipos
+    private val _equipos = MutableLiveData<Resource<List<EquipoUiModel>>>()
+    val equipos: LiveData<Resource<List<EquipoUiModel>>> = _equipos
+
+    private val _marcasFiltro = MutableLiveData<List<Marcas>>()
+    val marcasFiltro : LiveData<List<Marcas>> = _marcasFiltro
+
+    private val _areasFiltro = MutableLiveData<List<Area>>()
+    val areasFiltro : LiveData<List<Area>> = _areasFiltro
 
     private var textoBusqueda: String = ""
     private var marcaIdFiltro: Int? = null
@@ -27,7 +44,14 @@ class EquipoListViewModel : ViewModel(){
 
         viewModelScope.launch {
             try {
-                listaCompleta = repository.obtenerTodos()
+                listaCompleta = equipoRepository.obtenerTodos()
+                marcas = marcaRepository.obtenerTodas()
+                areas = areaRepository.obtenerTodas()
+                estadosMap = estadoRepository.obtenerTodas().associate { it.id to it.nombre }
+
+                _marcasFiltro.value = marcas
+                _areasFiltro.value = areas
+
                 aplicarFiltros()
 
             }catch (e: Exception){
@@ -36,10 +60,20 @@ class EquipoListViewModel : ViewModel(){
         }
     }
 
+    fun buscar (texto: String){
+        textoBusqueda = texto
+        aplicarFiltros()
+    }
 
+    fun filtrarPorMarca (marcaId: Int?){
+        marcaIdFiltro = marcaId
+        aplicarFiltros()
+    }
 
-
-
+    fun filtrarPorArea(areaId: Int?){
+        areaIdFiltro = areaId
+        aplicarFiltros()
+    }
 
     private fun aplicarFiltros(){
         val filtrados = listaCompleta.filter { equipo->
@@ -52,6 +86,18 @@ class EquipoListViewModel : ViewModel(){
 
             coincideTexto && coincideArea && coincideMarca
         }
-        _equipos.value = Resource.Success(filtrados)
+
+        val uiModels = filtrados.map { equipo->
+            EquipoUiModel(
+                id = equipo.id,
+                codigo = equipo.codigo,
+                descripcion = equipo.descripcion,
+                marcaNombre = marcas.find { it.id == equipo.marcaId }?.nombre ?: "-",
+                areaNombre = areas.find { it.id == equipo.areaId }?.nombre ?:"-",
+                estadoNombre= estadosMap[equipo.estadoId] ?:"-"
+            )
+        }
+
+        _equipos.value = Resource.Success(uiModels)
     }
 }
