@@ -63,6 +63,15 @@ class EquipoListAdapter (
             binding.btnEditar.setOnClickListener { onEditarClick(equipo) }
             binding.btnHistorial.setOnClickListener { onHistorialClick(equipo) }
 
+            if (!equipo.imagenUrl.isNullOrBlank()) {
+                com.bumptech.glide.Glide.with(binding.root.context)
+                    .load(equipo.imagenUrl)
+                    .centerCrop()
+                    .into(binding.ivImagenEquipo)
+            } else {
+                binding.ivImagenEquipo.setImageDrawable(null)
+            }
+
 
 
         }

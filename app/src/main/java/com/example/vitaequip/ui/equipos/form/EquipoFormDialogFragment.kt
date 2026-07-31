@@ -369,7 +369,7 @@ class EquipoFormDialogFragment : DialogFragment() {
 
                 val nombreArchivo = "equipo_${System.currentTimeMillis()}.jpg"
 
-                val bucket = com.example.vitaequip.data.remote.SupabaseClient.client.storage.from("equipos")
+                val bucket = com.example.vitaequip.data.remote.SupabaseClient.client.storage.from("imagenes-equipos")
                 bucket.upload(nombreArchivo, bytes) { upsert = false }
 
                 imagenUrlSubida = bucket.publicUrl(nombreArchivo)

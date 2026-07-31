@@ -94,7 +94,8 @@ class EquipoListViewModel : ViewModel(){
                 descripcion = equipo.descripcion,
                 marcaNombre = marcas.find { it.id == equipo.marcaId }?.nombre ?: "-",
                 areaNombre = areas.find { it.id == equipo.areaId }?.nombre ?:"-",
-                estadoNombre= estadosMap[equipo.estadoId] ?:"-"
+                estadoNombre= estadosMap[equipo.estadoId] ?:"-",
+                imagenUrl = equipo.imagenUrl
             )
         }
 
