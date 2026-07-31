@@ -112,4 +112,8 @@
     <string name="nav_reportes">Reports</string>
 
     <string name="cerrar_sesion">Log Out</string>
+    <string name="cerrar">Close</string>
+    <string name="numero_serie">Serial number</string>
+    <string name="inventario">Inventory</string>
+    <string name="seleccionar_imagen">Upload picture</string>
 </resources>

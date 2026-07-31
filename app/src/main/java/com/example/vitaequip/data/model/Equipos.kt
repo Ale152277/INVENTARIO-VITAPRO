@@ -5,7 +5,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class Equipo(
-    val id: Long,
+    val id: Long? = null,
     val descripcion: String,
     val codigo: String,
     val inventario: String? = null,
@@ -13,7 +13,6 @@ data class Equipo(
     val marcaId: Int? = null,
     val modelo: String? = null,
     val serie: String? = null,
-    val potencia: String? = null,
     @SerialName("bateria_voltaje")
     val bateriaVoltaje: Double? = null,
     @SerialName("bateria_amperaje")
@@ -37,7 +36,13 @@ data class Equipo(
     @SerialName("qr_url")
     val qrUrl: String? = null,
     @SerialName("creado_en")
-    val creadoEn: String,
+    val creadoEn: String? = null,
     @SerialName("actualizado_en")
-    val actualizadoEn: String
-)
+    val actualizadoEn: String? = null,
+    @SerialName("potencia_unidad")
+    val potenciaUnidad: String? = null,
+    @SerialName("potencia_valor")
+    val potenciaValor: Double? = null,
+
+
+    )

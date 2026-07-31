@@ -99,4 +99,6 @@ dependencies {
     implementation(libs.zxing.android.embedded)
 
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.4")
+
+    implementation("com.github.bumptech.glide:glide:4.16.0")
 }

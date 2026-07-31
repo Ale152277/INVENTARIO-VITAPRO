@@ -112,5 +112,9 @@
     <string name="nav_reportes">Reportes</string>
     <string name="cerrar_sesion">Cerrar Sesion</string>
 
+    <string name="cerrar">Cerrar</string>
+    <string name="numero_serie">Número de serie</string>
+    <string name="inventario">Inventario</string>
+    <string name="seleccionar_imagen">Seleccionar imagen</string>
 
 </resources>

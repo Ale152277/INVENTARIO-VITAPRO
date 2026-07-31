@@ -11,7 +11,7 @@ import kotlinx.coroutines.launch
 
 
 
-class EquipoFormViewModel : ViewModel(){
+class EquipoFormViewModel : ViewModel() {
     private val equipoRepository = EquipoRepository()
     private val pisoRepository = PisoRepository()
     private val areaRepository = AreaRepository()
@@ -33,7 +33,10 @@ class EquipoFormViewModel : ViewModel(){
     private val _guardado = MutableLiveData<Resource<Equipo>>()
     val guardado: LiveData<Resource<Equipo>> = _guardado
 
-    fun cargarCatalogos(){
+    private val _equipoActual = MutableLiveData<Equipo?>()
+    val equipoActual: LiveData<Equipo?> = _equipoActual
+
+    fun cargarCatalogos() {
         viewModelScope.launch {
             _pisos.value = pisoRepository.obtenerTodos()
             _estados.value = estadoRepository.obtenerTodas()
@@ -42,42 +45,51 @@ class EquipoFormViewModel : ViewModel(){
 
     }
 
-    fun cargarAreasPorPiso(pisoId : Int){
+    fun cargarAreasPorPiso(pisoId: Int) {
         viewModelScope.launch {
             _areas.value = areaRepository.obtenerPorPiso(pisoId)
         }
 
     }
 
-    fun guardarEquipo(equipo: Equipo, esEdicion: Boolean){
+    fun guardarEquipo(equipo: Equipo, esEdicion: Boolean) {
 
         val errorCodigo = EquipoFormValidator.validarCodigo(equipo.codigo)
         val errorDescripcion = EquipoFormValidator.validarDescripcion(equipo.descripcion)
         val errorEstados = EquipoFormValidator.validarEstado(equipo.estadoId)
 
         val primeroError = errorCodigo ?: errorDescripcion ?: errorEstados
-        if(primeroError != null){
+        if (primeroError != null) {
             _guardado.value = Resource.Error(primeroError)
             return
         }
         _guardado.value = Resource.Loading
 
-
         viewModelScope.launch {
             try {
-                if(esEdicion){
-                    equipoRepository.actualizar(equipo.id, equipo)
-                }else{
+                if (esEdicion) {
+
+                    val id = equipo.id ?: throw Exception("El equipo no tiene ID para actualizar")
+                    equipoRepository.actualizar(id, equipo)
+
+                } else {
                     equipoRepository.crear(equipo)
                 }
+
                 _guardado.value = Resource.Success(equipo)
 
-            }catch (e: Exception){
-                _guardado.value = Resource.Error(e.message ?: "Error al guardar el producto")
+            } catch (e: Exception) {
+                _guardado.value = Resource.Error(
+                    e.message ?: "Error al guardar el producto"
+                )
             }
         }
+
     }
+    fun cargarEquipo(equipoId: Long) {
+        viewModelScope.launch {
+            _equipoActual.value = equipoRepository.obtenerPorId(equipoId)
+        }
 
-
-
+    }
 }

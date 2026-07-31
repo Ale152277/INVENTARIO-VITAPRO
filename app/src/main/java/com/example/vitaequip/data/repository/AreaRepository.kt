@@ -14,7 +14,7 @@ class AreaRepository {
 
     suspend fun obtenerPorPiso(pisoId: Int): List<Area>{
         return tabla.select{
-            filter { eq("píso_id", pisoId) }
+            filter { eq("piso_id", pisoId) }
         }.decodeList<Area>()
     }
 }

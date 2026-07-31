@@ -16,6 +16,7 @@ import com.example.vitaequip.ui.equipos.form.EquipoFormActivity
 import com.example.vitaequip.util.Constants
 import com.example.vitaequip.util.Resource
 import androidx.core.widget.addTextChangedListener
+import com.example.vitaequip.ui.equipos.form.EquipoFormDialogFragment
 
 class EquipoListFragment : Fragment() {
 
@@ -40,9 +41,8 @@ class EquipoListFragment : Fragment() {
 
         adapter = EquipoListAdapter(
             onEditarClick = { equipo ->
-                val intent = android.content.Intent(requireContext(), EquipoFormActivity::class.java)
-                intent.putExtra(Constants.EXTRA_EQUIPO_ID, equipo.id)
-                startActivity(intent)
+                EquipoFormDialogFragment.newInstance(equipoId = equipo.id)
+                    .show(childFragmentManager, "equipo_form")
 
             },
 
@@ -51,9 +51,13 @@ class EquipoListFragment : Fragment() {
                 intent.putExtra(Constants.EXTRA_EQUIPO_ID, equipo.id)
                 startActivity(intent)
 
-
             }
         )
+        childFragmentManager.setFragmentResultListener(Constants.RESULT_EQUIPO_GUARDADO, viewLifecycleOwner) { _, _ ->
+            viewModel.cargarEquipos()
+        }
+
+
 
 
         binding.rvEquipos.layoutManager = LinearLayoutManager(requireContext())
@@ -64,7 +68,9 @@ class EquipoListFragment : Fragment() {
         }
 
         binding.btnNuevo.setOnClickListener {
-            startActivity(android.content.Intent(requireContext(), EquipoFormActivity::class.java))
+            EquipoFormDialogFragment.newInstance(equipoId = null)
+                .show(childFragmentManager,"equipo_form")
+
         }
 
 

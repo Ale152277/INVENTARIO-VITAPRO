@@ -6,4 +6,6 @@ object Constants {
 
     const val EXTRA_EQUIPO_ID = "extra_equipo_id"
 
+    const val RESULT_EQUIPO_GUARDADO = "equipo_guardado"
+
 }

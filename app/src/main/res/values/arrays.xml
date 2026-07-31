@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="unidades_potencia">
+        <item>kW</item>
+        <item>kVA</item>
+        <item>HP</item>
+
+
+    </string-array>
+
+</resources>
