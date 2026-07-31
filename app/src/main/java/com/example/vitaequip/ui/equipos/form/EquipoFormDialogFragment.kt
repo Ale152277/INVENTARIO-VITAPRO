@@ -100,7 +100,7 @@ class EquipoFormDialogFragment : DialogFragment() {
         super.onStart()
         //se ajusta el ancho del dialogo para que se vea como tarjeta
         dialog?.window?.setLayout(
-            (resources.displayMetrics.widthPixels * 0.92).toInt(),
+            (resources.displayMetrics.widthPixels * 1).toInt(),
             WindowManager.LayoutParams.WRAP_CONTENT
         )
     }
