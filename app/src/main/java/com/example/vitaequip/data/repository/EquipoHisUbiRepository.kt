@@ -1,6 +1,6 @@
 package com.example.vitaequip.data.repository
 
-import com.example.vitaequip.data.model.EquipoHistorialUbicacion
+import com.example.vitaequip.data.model.EquipoHistorialUbicacionInsert
 import com.example.vitaequip.data.remote.SupabaseClient
 import io.github.jan.supabase.postgrest.postgrest
 import io.github.jan.supabase.postgrest.query.Order
@@ -8,16 +8,16 @@ class EquipoHisUbiRepository {
     private val tabla = SupabaseClient.client.postgrest.from("equipos_historial_ubicacion")
 
 
-    suspend fun obtenerPorEquipo(equipoId: Long): List<EquipoHistorialUbicacion>{
+    suspend fun obtenerPorEquipo(equipoId: Long): List<EquipoHistorialUbicacionInsert>{
         return tabla.select {
             filter { eq("equipo_id", equipoId) }
             order("fecha_desde", order= Order.DESCENDING)
-        }.decodeList<EquipoHistorialUbicacion>()
+        }.decodeList<EquipoHistorialUbicacionInsert>()
 
 
     }
 
-    suspend fun crear (registro: EquipoHistorialUbicacion){
+    suspend fun crear (registro: EquipoHistorialUbicacionInsert){
         tabla.insert(registro)
     }
 

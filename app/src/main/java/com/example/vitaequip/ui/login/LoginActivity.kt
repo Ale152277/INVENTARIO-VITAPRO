@@ -2,6 +2,7 @@ package com.example.vitaequip.ui.login
 
 import android.content.Intent
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -52,8 +53,11 @@ class LoginActivity : AppCompatActivity() {
 
                 is Resource.Error ->{
                     binding.progressLogin.visibility = android.view.View.GONE
-                    binding.tvErrorLogin.text = resource.mensaje
-                    binding.tvErrorLogin.visibility = android.view.View.VISIBLE
+                    Toast.makeText(
+                        this,
+                        "Credenciales incorrecas",
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
             }
 

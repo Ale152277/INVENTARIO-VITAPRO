@@ -34,7 +34,7 @@ class EquipoRepository {
     }
 
     suspend fun actualizar(id:Long, equipo: Equipo){
-        tabla.update {
+        tabla.update(equipo) {
             filter { eq("id", id) }
         }
     }

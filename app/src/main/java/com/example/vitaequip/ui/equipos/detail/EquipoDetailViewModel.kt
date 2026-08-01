@@ -4,7 +4,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.ViewModel
 import com.example.vitaequip.data.model.Equipo
-import com.example.vitaequip.data.model.EquipoHistorialUbicacion
+import com.example.vitaequip.data.model.EquipoHistorialUbicacionInsert
 import com.example.vitaequip.data.model.ReporteIncidencia
 import com.example.vitaequip.data.repository.ReporteIncidenciaRepository
 import com.example.vitaequip.data.repository.EquipoRepository
@@ -24,8 +24,8 @@ class EquipoDetailViewModel : ViewModel(){
     private val equipo : LiveData<Resource<Equipo>> = _equipo
 
 
-    private val _historial = MutableLiveData<Resource<List<EquipoHistorialUbicacion>>>()
-    private val historial : LiveData<Resource<List<EquipoHistorialUbicacion>>> = _historial
+    private val _historial = MutableLiveData<Resource<List<EquipoHistorialUbicacionInsert>>>()
+    private val historial : LiveData<Resource<List<EquipoHistorialUbicacionInsert>>> = _historial
 
     private val _reportes = MutableLiveData<Resource<List<ReporteIncidencia>>>()
     val reportes : LiveData<Resource<List<ReporteIncidencia>>> = _reportes
