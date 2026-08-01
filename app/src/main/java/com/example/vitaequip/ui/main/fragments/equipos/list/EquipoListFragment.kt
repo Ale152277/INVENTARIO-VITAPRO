@@ -22,7 +22,7 @@ class EquipoListFragment : Fragment() {
     private var _binding : FragmentEquipoListBinding? = null
     private val binding get() = _binding!!
 
-    private val viewModel : EquipoListViewModel by viewModels()
+    private val viewModel : EquipoListViewModel by viewModels()//permite que la instancia del viewmodel sobreviva a rotaciones
     private lateinit var adapter: EquipoListAdapter
 
     override fun onCreateView(

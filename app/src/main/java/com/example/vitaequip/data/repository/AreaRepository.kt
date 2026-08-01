@@ -3,7 +3,6 @@ package com.example.vitaequip.data.repository
 import com.example.vitaequip.data.model.Area
 import com.example.vitaequip.data.remote.SupabaseClient
 import io.github.jan.supabase.postgrest.postgrest
-import io.github.jan.supabase.postgrest.query.Columns
 
 class AreaRepository {
     private val tabla = SupabaseClient.client.postgrest.from("areas")
@@ -14,7 +13,7 @@ class AreaRepository {
 
     suspend fun obtenerPorPiso(pisoId: Int): List<Area>{
         return tabla.select{
-            filter { eq("píso_id", pisoId) }
+            filter { eq("piso_id", pisoId) }
         }.decodeList<Area>()
     }
 }

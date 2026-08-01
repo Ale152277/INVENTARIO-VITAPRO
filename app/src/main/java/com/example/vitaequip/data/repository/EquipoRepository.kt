@@ -21,6 +21,7 @@ class EquipoRepository {
 
 
     //servira para cuando escaneen el qr que contendrá el codigo del equipo
+    //sinlgeornull porque espera una lista o un valor nulo (Asi evita que la app crashee)
     suspend fun obtenerPorCodigo(codigo: String): Equipo?{
         return tabla.select {
             filter { eq("codigo", codigo)}

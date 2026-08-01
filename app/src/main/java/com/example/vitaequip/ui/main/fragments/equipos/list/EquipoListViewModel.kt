@@ -20,12 +20,10 @@ class EquipoListViewModel : ViewModel(){
     private val marcaRepository = MarcaRepository()
     private val estadoRepository = EstadoRepository()
     private val areaRepository = AreaRepository()
-
     private var listaCompleta: List <Equipo> = emptyList()
     private var marcas: List<Marcas> =emptyList()
     private var areas: List<Area> = emptyList()
     private var estadosMap: Map<Int, String> = emptyMap()
-
     private val _equipos = MutableLiveData<Resource<List<EquipoUiModel>>>()
     val equipos: LiveData<Resource<List<EquipoUiModel>>> = _equipos
 

@@ -11,9 +11,7 @@ class EquipoListAdapter (
     private val onHistorialClick: (EquipoUiModel) -> Unit,
 
 ): RecyclerView.Adapter<EquipoListAdapter.EquipoViewHolder>(){
-
     private var lista: List<EquipoUiModel> = emptyList()
-
     fun actualizarLista(nuevaLista: List<EquipoUiModel>){
         val diffResult = androidx.recyclerview.widget.DiffUtil.calculateDiff(
             EquipoDiffCallback(lista, nuevaLista)
@@ -34,13 +32,7 @@ class EquipoListAdapter (
     override fun onBindViewHolder(holder: EquipoViewHolder, position: Int) {
         holder.bind(lista[position])
     }
-
-
-
-
-
     inner class EquipoViewHolder(private val binding: ItemEquipoBinding): RecyclerView.ViewHolder(binding.root){
-
         fun bind(equipo: EquipoUiModel){
             binding.tvCodigo.text = equipo.codigo
             binding.tvDescripcion.text = equipo.descripcion
@@ -54,24 +46,12 @@ class EquipoListAdapter (
 
                 else-> R.drawable.bg_badge_operativo to R.color.gris_texto
             }
-
             binding.tvEstadoBadge.setBackgroundColor(fondoBadge)
             binding.tvEstadoBadge.setTextColor(
                 androidx.core.content.ContextCompat.getColor(binding.root.context, colorTexto)
-
             )
             binding.btnEditar.setOnClickListener { onEditarClick(equipo) }
             binding.btnHistorial.setOnClickListener { onHistorialClick(equipo) }
-
-
-
         }
-
-
-
-
-
     }
-
-
 }

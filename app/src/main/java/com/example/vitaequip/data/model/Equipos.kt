@@ -13,7 +13,6 @@ data class Equipo(
     val marcaId: Int? = null,
     val modelo: String? = null,
     val serie: String? = null,
-    val potencia: String? = null,
     @SerialName("bateria_voltaje")
     val bateriaVoltaje: Double? = null,
     @SerialName("bateria_amperaje")
@@ -38,6 +37,15 @@ data class Equipo(
     val qrUrl: String? = null,
     @SerialName("creado_en")
     val creadoEn: String,
+
     @SerialName("actualizado_en")
-    val actualizadoEn: String
-)
+    val actualizadoEn: String,
+
+    @SerialName("potencia_valor")
+    val potenciaValor: Double? = null,
+
+    @SerialName("potencia_unidad")
+    val potenciaUnidad: String? = null,
+
+    )
+

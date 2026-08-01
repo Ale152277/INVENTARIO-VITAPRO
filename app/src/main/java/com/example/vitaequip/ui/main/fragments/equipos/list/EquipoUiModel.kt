@@ -1,7 +1,4 @@
 package com.example.vitaequip.ui.main.fragments.equipos.list
-
-
-
 data class EquipoUiModel(
     val id: Long,
     val codigo: String,
