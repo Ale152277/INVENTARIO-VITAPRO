@@ -8,9 +8,9 @@ data class EquipoHistorialUbicacionInsert(
     @SerialName("equipo_id")
     val equipoId: Long,
     @SerialName("area_id")
-    val areaId: Long,
+    val areaId: Int? = null,
     @SerialName("modificador_por")
-    val modificadorPor: Long? = null
+    val modificadoPor: Long? = null
 
 
 )

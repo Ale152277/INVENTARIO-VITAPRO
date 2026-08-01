@@ -7,6 +7,7 @@ import androidx.lifecycle.MutableLiveData
 import com.example.vitaequip.data.model.*
 import com.example.vitaequip.data.repository.*
 import com.example.vitaequip.util.Resource
+import com.example.vitaequip.util.SessionManager
 import kotlinx.coroutines.launch
 
 
@@ -17,6 +18,8 @@ class EquipoFormViewModel : ViewModel() {
     private val areaRepository = AreaRepository()
     private val marcaRepository = MarcaRepository()
     private val estadoRepository = EstadoRepository()
+    private val historialEquipoRepository = EquipoHistorialEstadoRepository()
+    private val historailUbicacionRepository = EquipoHisUbiRepository()
 
     private val _pisos = MutableLiveData<List<Piso>>()
     val pisos: LiveData<List<Piso>> = _pisos
@@ -36,6 +39,36 @@ class EquipoFormViewModel : ViewModel() {
     private val _equipoActual = MutableLiveData<Equipo?>()
     val equipoActual: LiveData<Equipo?> = _equipoActual
 
+    private suspend fun registrarHistorialSiCambio(anterior: Equipo?, actual : Equipo){
+        val equipoId = actual.id ?: return
+
+        if (anterior == null) return
+
+        val usuarioId = SessionManager.usuarioActual?.id
+
+        if(anterior.estadoId != actual.estadoId && actual.estadoId != null){
+            historialEquipoRepository.registrar(
+                EquipoHistorialEstado(
+                    equipoId = equipoId,
+                    estadoAnteriorId = anterior.estadoId,
+                    estadoNuevoId = actual.estadoId,
+                    modificadoPor = usuarioId
+                )
+            )
+        }
+
+        if (anterior.areaId != actual.areaId && actual.estadoId != null){
+            val ahora = java.time.LocalDateTime.now().toString()
+            historailUbicacionRepository.cerrarRegistroVigente(equipoId, ahora)
+            historailUbicacionRepository.crear(
+                EquipoHistorialUbicacionInsert(equipoId, actual.areaId, usuarioId)
+            )
+        }
+
+
+
+
+    }
     fun cargarCatalogos() {
         viewModelScope.launch {
             _pisos.value = pisoRepository.obtenerTodos()

@@ -19,6 +19,6 @@ class UsuarioRepository {
     }
 
     suspend fun crear (usuario: Usuario){
-        tabla.insert(Usuario)
+        tabla.insert(usuario)
     }
 }
