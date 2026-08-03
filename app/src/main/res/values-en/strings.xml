@@ -116,4 +116,10 @@
     <string name="numero_serie">Serial number</string>
     <string name="inventario">Inventory</string>
     <string name="seleccionar_imagen">Upload picture</string>
+
+    <string name="evento_cambio_estado">Status changed from %1$s to %2$s</string>
+    <string name="evento_cambio_ubicacion">Moved to %1$s</string>
+
+    <string name="descargar_pdf">Download PDF</string>
+    <string name="imagen_equipo">Machine Picture</string>
 </resources>

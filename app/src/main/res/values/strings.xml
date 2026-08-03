@@ -117,4 +117,9 @@
     <string name="inventario">Inventario</string>
     <string name="seleccionar_imagen">Seleccionar imagen</string>
 
+    <string name="evento_cambio_estado">Estado cambiado de %1$s a %2$s</string>
+    <string name="evento_cambio_ubicacion">Trasladado a %1$s</string>
+
+    <string name="descargar_pdf">Descargar PDF</string>
+    <string name="imagen_equipo">Imagen equipo</string>
 </resources>
