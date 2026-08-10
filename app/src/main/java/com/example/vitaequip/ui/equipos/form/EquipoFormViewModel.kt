@@ -57,7 +57,7 @@ class EquipoFormViewModel : ViewModel() {
             )
         }
 
-        if (anterior.areaId != actual.areaId && actual.estadoId != null){
+        if (anterior.areaId != actual.areaId && actual.areaId != null){
             val ahora = java.time.LocalDateTime.now().toString()
             historailUbicacionRepository.cerrarRegistroVigente(equipoId, ahora)
             historailUbicacionRepository.crear(
@@ -96,6 +96,8 @@ class EquipoFormViewModel : ViewModel() {
             _guardado.value = Resource.Error(primeroError)
             return
         }
+
+        val equipoAnterior = _equipoActual.value
         _guardado.value = Resource.Loading
 
         viewModelScope.launch {
@@ -108,6 +110,7 @@ class EquipoFormViewModel : ViewModel() {
                 } else {
                     equipoRepository.crear(equipo)
                 }
+                registrarHistorialSiCambio(equipoAnterior, equipo)
 
                 _guardado.value = Resource.Success(equipo)
 
