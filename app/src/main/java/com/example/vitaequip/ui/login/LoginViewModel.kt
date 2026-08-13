@@ -41,10 +41,17 @@ class LoginViewModel : ViewModel(){
                 val usuario = usuarioRepository.obtenerPorAuthId(authId)
 
                 if(usuario == null){
-                    _loginState.value = Resource.Error("Usuario no registrado en el sistema")
+                    _loginState.value =
+                        Resource.Error("Usuario no registrado en el sistema")
+
                 }else if(!usuario.activo){
-                    _loginState.value = Resource.Error("Usuario inactivo")
-                }else{
+                    _loginState.value =
+                        Resource.Error("Usuario inactivo")
+                }else if(usuario.rol != rolEsperado){
+                    _loginState.value =
+                        Resource.Error("Esta cuenta no tiene acceso mediante esta opción")
+                }
+                else{
                     SessionManager.iniciarSesion(usuario)
                     _loginState.value = Resource.Success(usuario)
                 }

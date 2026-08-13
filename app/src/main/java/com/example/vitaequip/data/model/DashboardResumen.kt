@@ -1,7 +1,4 @@
-package com.example.vitaequip.ui.main.fragments.dashboard
-
-
-import com.example.vitaequip.data.model.Equipo
+package com.example.vitaequip.data.model
 
 data class DashboardResumen(
     val totalEquipos: Int,

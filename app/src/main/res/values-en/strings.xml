@@ -111,6 +111,10 @@
     <string name="nav_notificaciones">Notifications</string>
     <string name="nav_reportes">Reports</string>
 
+
+    <!--Navigation LECTOR-->
+    <string name="nav_inicio">Home</string>
+
     <string name="cerrar_sesion">Log Out</string>
     <string name="cerrar">Close</string>
     <string name="numero_serie">Serial number</string>
@@ -122,4 +126,15 @@
 
     <string name="descargar_pdf">Download PDF</string>
     <string name="imagen_equipo">Machine Picture</string>
+
+
+    <string name="bienvenida_lector">WELCOME</string>
+    <string name="titulo_mis_activos">My Assets</string>
+    <string name="hint_buscar_dispositivos">Search devices…</string>
+    <string name="label_total">Total</string>
+    <string name="label_activos">Active</string>
+    <string name="label_alertas">Alerts</string>
+    <string name="label_qr_scanner">QR Scanner</string>
+
+
 </resources>

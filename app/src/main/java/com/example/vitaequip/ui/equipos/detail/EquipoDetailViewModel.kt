@@ -13,6 +13,8 @@ import com.example.vitaequip.data.repository.EquipoRepository
 import com.example.vitaequip.data.repository.EquipoHisUbiRepository
 import com.example.vitaequip.data.repository.EquipoHistorialEstadoRepository
 import com.example.vitaequip.data.repository.EstadoRepository
+import com.example.vitaequip.data.repository.MarcaRepository
+import com.example.vitaequip.data.repository.PisoRepository
 import com.example.vitaequip.data.repository.UsuarioRepository
 import com.example.vitaequip.util.Resource
 import kotlinx.coroutines.launch
@@ -28,10 +30,16 @@ class EquipoDetailViewModel : ViewModel(){
     private val areaRepository = AreaRepository()
     private val usuarioRepository = UsuarioRepository()
 
+    private val marcaRepository = MarcaRepository()
+
+    private val pisoRepository = PisoRepository()
+
 
     private val _equipo = MutableLiveData<Resource<Equipo>>()
     val equipo : LiveData<Resource<Equipo>> = _equipo
 
+    private val _equipoDetalle = MutableLiveData<Resource<EquipoDetalleUiModel>>()
+    val equipoDetalle : LiveData<Resource<EquipoDetalleUiModel>> = _equipoDetalle
 
     private val _historialCombinado = MutableLiveData<Resource<List<EventoHistorialUiModel>>>()
     val historialCombinado : LiveData<Resource<List<EventoHistorialUiModel>>> = _historialCombinado
@@ -42,17 +50,40 @@ class EquipoDetailViewModel : ViewModel(){
 
     fun cargarEquipo (equipoId :Long){
         _equipo.value = Resource.Loading
+        _equipoDetalle.value = Resource.Loading
         viewModelScope.launch {
             try {
                 val resultado = equipoRepository.obtenerPorId(equipoId)
                 if(resultado != null){
                     _equipo.value = Resource.Success(resultado)
+
+                    val marcas = marcaRepository.obtenerTodas().associateBy { it.id }
+                    val areas = areaRepository.obtenerTodas().associateBy { it.id }
+                    val pisos = pisoRepository.obtenerTodos().associateBy { it.id }
+
+                    val areaDelEquipo = areas[resultado.areaId]
+                    val pisoDelEquipo = pisos[areaDelEquipo?.pisoId]
+
+                    _equipoDetalle.value = Resource.Success(
+                        EquipoDetalleUiModel(
+                            equipo = resultado,
+                            marcaNombre = marcas[resultado.marcaId]?.nombre ?: "-",
+                            areaNombre = areaDelEquipo?.nombre?: "-",
+                            pisoNombre = pisoDelEquipo?.nombre?: "-"
+                        )
+                    )
+
                 }else{
                     _equipo.value = Resource.Error("Equipo no encontrado")
+                    _equipoDetalle.value = Resource.Error("Equipo no encontrado")
+
                 }
 
             }catch (e: Exception){
-                _equipo.value = Resource.Error (e.message ?: "Error al cargar el equipo")
+                val mensaje = e.message ?: "Error al cargar el equipo"
+                _equipo.value = Resource.Error (mensaje)
+                _equipoDetalle.value = Resource.Error(mensaje)
+
             }
         }
     }

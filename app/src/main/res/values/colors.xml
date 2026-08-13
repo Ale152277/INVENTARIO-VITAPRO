@@ -12,9 +12,9 @@
     <color name="gris_borde">#D1D5DB</color>
 
     <!-- Estados de equipos -->
-    <color name="estado_operativo">#22C55E</color>
-    <color name="estado_mantenimiento">#EAB308</color>
-    <color name="estado_fuera_servicio">#EF4444</color>
+    <color name="estado_operativo">#29663E</color>
+    <color name="estado_mantenimiento">#A87824</color>
+    <color name="estado_fuera_servicio">#370B0B</color>
 
     <!-- Notificaciones (fondo suave de cada tipo) -->
     <color name="notif_alerta_fondo">#FCE4E4</color>

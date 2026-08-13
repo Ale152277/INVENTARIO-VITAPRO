@@ -46,28 +46,15 @@ class EquipoDetailActivity : AppCompatActivity() {
         viewModel.cargarReportes(equipoId)
 
         binding.btnDescargarPdf.setOnClickListener {
-            val equipo = (viewModel.equipo.value as? Resource.Success)?.data
+            val detalle = (viewModel.equipoDetalle.value as? Resource.Success)?.data
             val eventos = (viewModel.historialCombinado.value as? Resource.Success)?.data
             val reportes = (viewModel.reportes.value as? Resource.Success)?.data
 
-            if (equipo == null || eventos == null) {
+            if (detalle == null || eventos == null) {
                 android.widget.Toast.makeText(this, "Espera a que termine de cargar el historial", android.widget.Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
-
-            binding.btnDescargarPdf.setOnClickListener {
-                val equipo = (viewModel.equipo.value as? Resource.Success)?.data
-                val eventos = (viewModel.historialCombinado.value as? Resource.Success)?.data
-                val reportes = (viewModel.reportes.value as? Resource.Success)?.data
-
-                if (equipo == null || eventos == null) {
-                    android.widget.Toast.makeText(this, "Espera a que termine de cargar el historial", android.widget.Toast.LENGTH_SHORT).show()
-                    return@setOnClickListener
-                }
-
-                PdfGenerator.generarPdfHistorial(this, equipo, eventos, reportes ?: emptyList())
-            }
-
+            PdfGenerator.generarPdfHistorial(this, detalle, eventos, reportes ?: emptyList())
         }
 
     }

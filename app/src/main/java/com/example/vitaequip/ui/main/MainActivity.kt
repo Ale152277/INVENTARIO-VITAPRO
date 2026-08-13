@@ -31,17 +31,33 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        viewModel.cargarUsuarioActual()
+
         val navHostFragment = supportFragmentManager
            .findFragmentById(R.id.navHostFragment) as NavHostFragment
 
         val navController = navHostFragment.navController
 
+        val navGraph = navHostFragment.navController.navInflater.inflate(R.navigation.nav_graph)
+        navGraph.setStartDestination(
+            if(viewModel.esAdmin()){
+                R.id.dashboardFragment
+            }else{
+                R.id.inicioLectorFragment
+            }
+        )
+
+        navController.graph = navGraph
+
+
         binding.bottomNav.setupWithNavController(navController)
 
-        viewModel.cargarUsuarioActual()
 
         if(!viewModel.esAdmin()){
             binding.bottomNav.menu.findItem(R.id.reporteListFragment)?.isVisible = false
+            binding.bottomNav.menu.findItem(R.id.dashboardFragment)?.isVisible = false
+        }else{
+            binding.bottomNav.menu.findItem(R.id.inicioLectorFragment).isVisible = false
         }
 
         binding.navigationView.setNavigationItemSelectedListener { item->
@@ -53,6 +69,7 @@ class MainActivity : AppCompatActivity() {
                 else-> false
             }
         }
+
 
     }
     private fun cerraSesion(){

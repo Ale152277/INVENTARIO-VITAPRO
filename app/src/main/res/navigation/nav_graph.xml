@@ -33,4 +33,10 @@
         tools:layout="@layout/fragment_reporte_list"
         />
 
+    <fragment
+        android:id="@+id/inicioLectorFragment"
+        android:name="com.example.vitaequip.ui.main.fragments.inicio.InicioLectorFragment"
+        android:label="@string/nav_inicio"
+        tools:layout="@layout/fragment_inicio_lector"/>
+
 </navigation>

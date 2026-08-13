@@ -17,11 +17,14 @@ import com.example.vitaequip.util.Constants
 import com.example.vitaequip.util.Resource
 import androidx.core.widget.addTextChangedListener
 import com.example.vitaequip.ui.equipos.form.EquipoFormDialogFragment
+import com.example.vitaequip.util.SessionManager
 
 class EquipoListFragment : Fragment() {
 
     private var _binding : FragmentEquipoListBinding? = null
     private val binding get() = _binding!!
+
+
 
     private val viewModel : EquipoListViewModel by viewModels()//permite que la instancia del viewmodel sobreviva a rotaciones
     private lateinit var adapter: EquipoListAdapter
@@ -72,6 +75,17 @@ class EquipoListFragment : Fragment() {
                 .show(childFragmentManager,"equipo_form")
 
         }
+
+        binding.btnRegresar.setOnClickListener {
+            parentFragmentManager.popBackStack()
+        }
+
+        binding.btnNuevo.visibility =
+            if(SessionManager.esAdmin()){
+                View.VISIBLE
+            }else{
+                View.GONE
+            }
 
 
         viewModel.marcasFiltro.observe(viewLifecycleOwner) { marcas ->

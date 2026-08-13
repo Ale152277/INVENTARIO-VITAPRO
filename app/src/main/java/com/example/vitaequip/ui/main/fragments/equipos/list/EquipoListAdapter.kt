@@ -1,6 +1,7 @@
 package com.example.vitaequip.ui.main.fragments.equipos.list
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.vitaequip.R
@@ -55,11 +56,13 @@ class EquipoListAdapter (
                 else-> R.drawable.bg_badge_operativo to R.color.gris_texto
             }
 
-            binding.tvEstadoBadge.setBackgroundColor(fondoBadge)
+            binding.tvEstadoBadge.setBackgroundResource(fondoBadge)
             binding.tvEstadoBadge.setTextColor(
                 androidx.core.content.ContextCompat.getColor(binding.root.context, colorTexto)
 
             )
+            binding.btnEditar.visibility =
+                if (com.example.vitaequip.util.SessionManager.esAdmin()) View.VISIBLE else View.GONE
             binding.btnEditar.setOnClickListener { onEditarClick(equipo) }
             binding.btnHistorial.setOnClickListener { onHistorialClick(equipo) }
 
