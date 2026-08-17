@@ -9,7 +9,9 @@ import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.vitaequip.databinding.FragmentDashboardBinding
 import com.example.vitaequip.ui.equipos.form.EquipoFormActivity
+import com.example.vitaequip.ui.equipos.form.EquipoFormDialogFragment
 import com.example.vitaequip.ui.main.MainActivity
+import com.example.vitaequip.ui.main.fragments.equipos.list.EquipoListFragment
 import com.example.vitaequip.util.Resource
 import com.example.vitaequip.util.SessionManager
 
@@ -46,7 +48,8 @@ class DashboardFragment : Fragment() {
             if(!SessionManager.esAdmin()) View.GONE else View.VISIBLE
 
         binding.btnRegistrarEquipo.setOnClickListener {
-            startActivity(android.content.Intent(requireContext(), EquipoFormActivity::class.java))
+            EquipoFormDialogFragment.newInstance(equipoId = null)
+                .show(childFragmentManager, "equipo_form")
         }
 
         viewModel.resumen.observe(viewLifecycleOwner) { resource ->
@@ -68,6 +71,15 @@ class DashboardFragment : Fragment() {
                     binding.tvFueraServicio.text = resumen.fueraDeServicio.toString()
 
                     proximosAdapter.actualizarLista(resumen.proximosMantenimientos)
+
+                    val total = resumen.totalEquipos
+                    binding.tvConteoOperativo.text = resumen.operativos.toString()
+                    binding.tvConteoMantenimiento.text = resumen.mantenimiento.toString()
+                    binding.tvConteoFueraServicio.text = resumen.fueraDeServicio.toString()
+
+                    binding.pbOperativo.progress = if (total > 0) (resumen.operativos * 100) / total else 0
+                    binding.pbMantenimiento.progress = if (total > 0) (resumen.mantenimiento * 100) / total else 0
+                    binding.pbFueraServicio.progress = if (total > 0) (resumen.fueraDeServicio * 100) / total else 0
                 }
                 is Resource.Error -> {
                     binding.progressDashboard.visibility = View.GONE

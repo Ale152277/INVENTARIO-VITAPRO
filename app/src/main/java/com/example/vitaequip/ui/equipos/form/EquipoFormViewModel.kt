@@ -5,9 +5,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.MutableLiveData
 import com.example.vitaequip.data.model.*
+import com.example.vitaequip.data.remote.SupabaseClient
 import com.example.vitaequip.data.repository.*
+import com.example.vitaequip.util.QrGenerator
 import com.example.vitaequip.util.Resource
 import com.example.vitaequip.util.SessionManager
+import io.github.jan.supabase.storage.storage
 import kotlinx.coroutines.launch
 
 
@@ -102,22 +105,42 @@ class EquipoFormViewModel : ViewModel() {
 
         viewModelScope.launch {
             try {
+
+                val equipoFinal: Equipo
+
                 if (esEdicion) {
 
                     val id = equipo.id ?: throw Exception("El equipo no tiene ID para actualizar")
                     equipoRepository.actualizar(id, equipo)
+                    equipoFinal = equipo
 
                 } else {
-                    equipoRepository.crear(equipo)
+
+                    // 1. Crear el equipo y recuperar el id que Supabase generó
+                    val creado = equipoRepository.crear(equipo)
+                    val id = creado.id ?: throw Exception("Supabase no devolvió el ID del equipo creado")
+
+                    val bytesQr = QrGenerator.generarBytesPng(id.toString())
+
+
+                    val bucketQr = SupabaseClient.client.storage.from("qr-equipos")
+                    val nombreArchivoQr = "equipo_$id.png"
+                    bucketQr.upload(nombreArchivoQr, bytesQr) { upsert = false }
+                    val urlQr = bucketQr.publicUrl(nombreArchivoQr)
+
+
+                    val equipoConQr = creado.copy(qrUrl = urlQr)
+                    equipoRepository.actualizar(id, equipoConQr)
+                    equipoFinal = equipoConQr
                 }
                 registrarHistorialSiCambio(equipoAnterior, equipo)
 
                 _guardado.value = Resource.Success(equipo)
 
             } catch (e: Exception) {
-                _guardado.value = Resource.Error(
-                    e.message ?: "Error al guardar el producto"
-                )
+                android.util.Log.e("GUARDAR_EQUIPO", "Error al guardar", e)
+                _guardado.value = Resource.Error(e.message ?: "Error al guardar el producto")
+
             }
         }
 

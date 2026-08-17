@@ -195,7 +195,6 @@ class EquipoFormDialogFragment : DialogFragment() {
 
     private fun configurarObservers(){
 
-        //-------------------------------MARCAS------------------------------------------------------
         viewModel.marcas.observe(viewLifecycleOwner){marcas ->
             listaMarcas = marcas
             binding.spinnerMarca.adapter = ArrayAdapter(
@@ -204,7 +203,6 @@ class EquipoFormDialogFragment : DialogFragment() {
             seleccionarEnSpinner(binding.spinnerMarca, marcas, equipoCargado?.marcaId)
         }
 
-        //-------------------------------PISOS------------------------------------------------------
         viewModel.pisos.observe(viewLifecycleOwner){pisos->
             listaPisos = pisos
 
@@ -223,7 +221,6 @@ class EquipoFormDialogFragment : DialogFragment() {
             }
         }
 
-        //-------------------------------AREAS------------------------------------------------------
         viewModel.areas.observe(viewLifecycleOwner) { areas ->
             listaAreas = areas
 
@@ -233,7 +230,6 @@ class EquipoFormDialogFragment : DialogFragment() {
             seleccionarEnSpinner(binding.spinnerArea, areas, equipoCargado?.areaId)
         }
 
-        //-------------------------------ESTADOS------------------------------------------------------
         viewModel.estados.observe(viewLifecycleOwner){estados->
 
             listaEstados = estados
@@ -245,18 +241,18 @@ class EquipoFormDialogFragment : DialogFragment() {
 
         }
 
-        //-------------------------------EQUIPO ACTUAL------------------------------------------------------
         viewModel.equipoActual.observe(viewLifecycleOwner){equipo ->
             equipoCargado = equipo
             equipo?.let{prellenarFormulario(it)}
         }
 
-        //-------------------------------GUARDADO------------------------------------------------------
         viewModel.guardado.observe(viewLifecycleOwner){resource ->
             when(resource){
                 is Resource.Success -> {
                     setFragmentResult(Constants.RESULT_EQUIPO_GUARDADO, Bundle())
                     dismiss()
+
+
                 }
                 is Resource.Error -> Toast.makeText(
                     requireContext(), resource.mensaje, Toast.LENGTH_SHORT

@@ -31,8 +31,10 @@ class EquipoRepository {
 
     }
 
-    suspend fun crear(equipo: Equipo){
-        tabla.insert(equipo)
+    suspend fun crear(equipo: Equipo): Equipo{
+      return tabla.insert(equipo){
+            select()
+        }.decodeSingle<Equipo>()
     }
 
     suspend fun actualizar(id:Long, equipo: Equipo){
