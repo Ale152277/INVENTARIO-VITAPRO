@@ -92,6 +92,8 @@
     <string name="fecha_ultimo_mantenimiento">Fecha de último mantenimiento</string>
     <string name="fecha_proximo_mantenimiento">Fecha de próximo mantenimiento</string>
     <string name="guardar_cambios">Guardar cambios</string>
+    <string name="empresa">Empresa</string>
+
 
     <!-- Historial de movimientos -->
     <string name="historial_movimientos">Historial de Movimientos</string>
@@ -135,7 +137,8 @@
     <string name="label_activos">Activos</string>
     <string name="label_alertas">Alertas</string>
     <string name="label_qr_scanner">QR Scanner</string>
-
-<!-- TODO: Remove or change this placeholder text -->
+    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+
+
 </resources>

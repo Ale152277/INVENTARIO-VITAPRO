@@ -13,7 +13,6 @@ import android.widget.Toast
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.setFragmentResult
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
 import com.example.vitaequip.R
@@ -23,7 +22,6 @@ import com.example.vitaequip.util.Constants
 import com.example.vitaequip.util.Resource
 import io.github.jan.supabase.storage.storage
 import kotlinx.coroutines.launch
-import java.net.URI
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
@@ -52,6 +50,11 @@ class EquipoFormDialogFragment : DialogFragment() {
 
     private var imagenUriSeleccionada: android.net.Uri? = null
     private var imagenUrlSubida: String? = null
+
+    private var listaEmpresas: List<Empresa> = emptyList()
+
+    private var empresaIdAPreseleccionar: Int? = null
+    private var pisoIdAPreseleccionar: Int? = null
 
     private val pickMedia = registerForActivityResult(
         androidx.activity.result.contract.ActivityResultContracts.PickVisualMedia()
@@ -126,8 +129,8 @@ class EquipoFormDialogFragment : DialogFragment() {
         configurarObservers()
         configurarBotonGuardar()
 
-        viewModel.cargarCatalogos()
         equipoId?.let { viewModel.cargarEquipo(it) }
+        viewModel.cargarCatalogos()
 
     }
 
@@ -193,84 +196,136 @@ class EquipoFormDialogFragment : DialogFragment() {
     }
 
 
-    private fun configurarObservers(){
+    private fun configurarObservers() {
 
-        viewModel.marcas.observe(viewLifecycleOwner){marcas ->
+        // 1. Ubicación previa en edición
+        viewModel.cadenaUbicacionEdicion.observe(viewLifecycleOwner) { cadena ->
+            cadena?.let {
+                empresaIdAPreseleccionar = it.empresaId
+                pisoIdAPreseleccionar = it.pisoId
+                seleccionarEnSpinner(binding.spinnerEmpresa, listaEmpresas, it.empresaId)
+            }
+        }
+
+        // 2. Marcas
+        viewModel.marcas.observe(viewLifecycleOwner) { marcas ->
             listaMarcas = marcas
-            binding.spinnerMarca.adapter = ArrayAdapter(
-                requireContext(), android.R.layout.simple_spinner_dropdown_item, marcas.map{it.nombre}
-            )
+            val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, marcas.map { it.nombre })
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            binding.spinnerMarca.adapter = adapter
             seleccionarEnSpinner(binding.spinnerMarca, marcas, equipoCargado?.marcaId)
         }
 
-        viewModel.pisos.observe(viewLifecycleOwner){pisos->
-            listaPisos = pisos
+        // 3. Empresas
+        viewModel.empresas.observe(viewLifecycleOwner) { empresas ->
+            listaEmpresas = empresas
+            val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, empresas.map { it.nombre })
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            binding.spinnerEmpresa.adapter = adapter
 
+            // Limpiar listener para evitar disparos accidentales
+            binding.spinnerEmpresa.onItemSelectedListener = null
 
-            binding.spinnerPiso.adapter = ArrayAdapter(
-                requireContext(), android.R.layout.simple_spinner_dropdown_item, pisos.map { it.nombre }
+            if (empresaIdAPreseleccionar != null) {
+                seleccionarEnSpinner(binding.spinnerEmpresa, empresas, empresaIdAPreseleccionar)
+            } else if (empresas.isNotEmpty()) {
+                binding.spinnerEmpresa.setSelection(0, false)
+            }
 
-            )
-
-            binding.spinnerPiso.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
-                override fun onItemSelected(p: AdapterView<*>?, v: View?, pos: Int, id: Long) {
-                    pisos.getOrNull(pos)?.let{viewModel.cargarAreasPorPiso(it.id)}
+            // Asignar listener DESPUÉS de establecer la selección inicial
+            binding.spinnerEmpresa.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+                override fun onItemSelected(p0: AdapterView<*>?, v: View?, pos: Int, id: Long) {
+                    empresas.getOrNull(pos)?.let { viewModel.cargarPisosPorEmpresa(it.id) }
                 }
+                override fun onNothingSelected(p0: AdapterView<*>?) {}
+            }
 
-                override fun onNothingSelected(p: AdapterView<*>?) {}
+            // Disparar carga de Pisos manualmente para la posición actual
+            val posicion = binding.spinnerEmpresa.selectedItemPosition
+            if (posicion in empresas.indices) {
+                viewModel.cargarPisosPorEmpresa(empresas[posicion].id)
             }
         }
 
+        // 4. Pisos
+        viewModel.pisos.observe(viewLifecycleOwner) { pisos ->
+            listaPisos = pisos
+            val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, pisos.map { it.nombre })
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            binding.spinnerPiso.adapter = adapter
+
+            binding.spinnerPiso.onItemSelectedListener = null
+
+            if (pisoIdAPreseleccionar != null) {
+                seleccionarEnSpinner(binding.spinnerPiso, pisos, pisoIdAPreseleccionar)
+                pisoIdAPreseleccionar = null // Resetear para no bloquear selecciones manuales futuras
+            } else if (pisos.isNotEmpty()) {
+                binding.spinnerPiso.setSelection(0, false)
+            }
+
+            binding.spinnerPiso.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+                override fun onItemSelected(p: AdapterView<*>?, v: View?, pos: Int, id: Long) {
+                    pisos.getOrNull(pos)?.let { viewModel.cargarAreasPorPiso(it.id) }
+                }
+                override fun onNothingSelected(p: AdapterView<*>?) {}
+            }
+
+            val posicion = binding.spinnerPiso.selectedItemPosition
+            if (posicion in pisos.indices) {
+                viewModel.cargarAreasPorPiso(pisos[posicion].id)
+            } else {
+                listaAreas = emptyList()
+                binding.spinnerArea.adapter = null
+            }
+        }
+
+        // 5. Áreas
         viewModel.areas.observe(viewLifecycleOwner) { areas ->
             listaAreas = areas
-
-            binding.spinnerArea.adapter = ArrayAdapter(
-                requireContext(), android.R.layout.simple_spinner_dropdown_item, areas.map { it.nombre }
-            )
+            val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, areas.map { it.nombre })
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            binding.spinnerArea.adapter = adapter
             seleccionarEnSpinner(binding.spinnerArea, areas, equipoCargado?.areaId)
         }
 
-        viewModel.estados.observe(viewLifecycleOwner){estados->
-
+        // 6. Estados
+        viewModel.estados.observe(viewLifecycleOwner) { estados ->
             listaEstados = estados
-            binding.spinnerEstado.adapter = ArrayAdapter(
-                requireContext(), android.R.layout.simple_spinner_dropdown_item, estados.map{it.nombre}
-            )
-
+            val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, estados.map { it.nombre })
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            binding.spinnerEstado.adapter = adapter
             seleccionarEnSpinner(binding.spinnerEstado, estados, equipoCargado?.estadoId)
-
         }
 
-        viewModel.equipoActual.observe(viewLifecycleOwner){equipo ->
+        // 7. Equipo Actual
+        viewModel.equipoActual.observe(viewLifecycleOwner) { equipo ->
             equipoCargado = equipo
-            equipo?.let{prellenarFormulario(it)}
+            equipo?.let { prellenarFormulario(it) }
         }
 
-        viewModel.guardado.observe(viewLifecycleOwner){resource ->
-            when(resource){
+        // 8. Resultado Guardado
+        viewModel.guardado.observe(viewLifecycleOwner) { resource ->
+            when (resource) {
                 is Resource.Success -> {
                     setFragmentResult(Constants.RESULT_EQUIPO_GUARDADO, Bundle())
                     dismiss()
-
-
                 }
-                is Resource.Error -> Toast.makeText(
-                    requireContext(), resource.mensaje, Toast.LENGTH_SHORT
-                ).show()
+                is Resource.Error -> Toast.makeText(requireContext(), resource.mensaje, Toast.LENGTH_SHORT).show()
                 else -> Unit
             }
         }
-
     }
 
     private fun <T> seleccionarEnSpinner(spinner: Spinner, lista: List<T>, idGuardado: Int?){
         if(idGuardado == null) return
         val posicion = lista.indexOfFirst { item ->
             when(item){
+                is Empresa -> item.id == idGuardado
                 is Marcas -> item.id == idGuardado
                 is Piso -> item.id == idGuardado
                 is Area -> item.id == idGuardado
                 is Estados -> item.id == idGuardado
+
                 else -> false
             }
         }
@@ -301,10 +356,7 @@ class EquipoFormDialogFragment : DialogFragment() {
         val posUnidad = unidades.indexOf(equipo.potenciaUnidad)
         if (posUnidad >= 0) binding.spinnerPotenciaUnidad.setSelection(posUnidad)
 
-        // Marca/piso/área/estado se seleccionan en sus propios observers de arriba:
-        // si equipoCargado llega ANTES que el catálogo, seleccionarEnSpinner ya se disparó
-        // desde acá con la lista todavía vacía; por eso también se vuelve a intentar
-        // dentro de cada observer de catálogo, usando equipoCargado ya asignado.
+
         seleccionarEnSpinner(binding.spinnerMarca, listaMarcas, equipo.marcaId)
         seleccionarEnSpinner(binding.spinnerArea, listaAreas, equipo.areaId)
         seleccionarEnSpinner(binding.spinnerEstado, listaEstados, equipo.estadoId)
@@ -316,18 +368,12 @@ class EquipoFormDialogFragment : DialogFragment() {
             val areaSeleccionada = listaAreas.getOrNull(binding.spinnerArea.selectedItemPosition)
             val estadoSeleccionado = listaEstados.getOrNull(binding.spinnerEstado.selectedItemPosition)
 
-            android.util.Log.d(
-                "DEBUG_ESTADO",
-                "posicion=${binding.spinnerEstado.selectedItemPosition} " +
-                        "tamañoLista=${listaEstados.size} " +
-                        "estadoSeleccionado=$estadoSeleccionado"
-            )
+
 
             val unidadSeleccionada = resources.getStringArray(R.array.unidades_potencia)
                 .getOrNull(binding.spinnerPotenciaUnidad.selectedItemPosition)
 
-            // Partimos del equipo ya cargado (edición) para no perder campos que el
-            // formulario no muestra (serie, observaciones, imagenUrl, qrUrl, etc.)
+
             val base = equipoCargado ?: Equipo(
                 id = null, descripcion = "", codigo = "",
                 creadoEn = null, actualizadoEn = null

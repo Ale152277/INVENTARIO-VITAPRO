@@ -12,18 +12,15 @@ import com.example.vitaequip.util.Resource
 import com.example.vitaequip.util.SessionManager
 import io.github.jan.supabase.storage.storage
 import kotlinx.coroutines.launch
-
-
-
 class EquipoFormViewModel : ViewModel() {
     private val equipoRepository = EquipoRepository()
     private val pisoRepository = PisoRepository()
     private val areaRepository = AreaRepository()
     private val marcaRepository = MarcaRepository()
     private val estadoRepository = EstadoRepository()
+    private val empresaRepository = EmpresaRepository()
     private val historialEquipoRepository = EquipoHistorialEstadoRepository()
     private val historailUbicacionRepository = EquipoHisUbiRepository()
-
     private val _pisos = MutableLiveData<List<Piso>>()
     val pisos: LiveData<List<Piso>> = _pisos
 
@@ -33,6 +30,9 @@ class EquipoFormViewModel : ViewModel() {
     private val _estados = MutableLiveData<List<Estados>>()
     val estados: LiveData<List<Estados>> = _estados
 
+    private val _empresas = MutableLiveData<List<Empresa>>()
+    val empresas: LiveData<List<Empresa>> = _empresas
+
     private val _marcas = MutableLiveData<List<Marcas>>()
     val marcas: LiveData<List<Marcas>> = _marcas
 
@@ -41,6 +41,10 @@ class EquipoFormViewModel : ViewModel() {
 
     private val _equipoActual = MutableLiveData<Equipo?>()
     val equipoActual: LiveData<Equipo?> = _equipoActual
+
+    private val _cadenaUbicacionEdicion = MutableLiveData<CadenaUbicacion?>()
+    val cadenaUbicacionEdicion: LiveData<CadenaUbicacion?> = _cadenaUbicacionEdicion
+
 
     private suspend fun registrarHistorialSiCambio(anterior: Equipo?, actual : Equipo){
         val equipoId = actual.id ?: return
@@ -74,11 +78,17 @@ class EquipoFormViewModel : ViewModel() {
     }
     fun cargarCatalogos() {
         viewModelScope.launch {
-            _pisos.value = pisoRepository.obtenerTodos()
             _estados.value = estadoRepository.obtenerTodas()
             _marcas.value = marcaRepository.obtenerTodas()
+            _empresas.value = empresaRepository.obtenerTodas()
         }
 
+    }
+
+    fun cargarPisosPorEmpresa(empresaId: Int) {
+        viewModelScope.launch {
+            _pisos.value = pisoRepository.obtenerPorEmpresa(empresaId)
+        }
     }
 
     fun cargarAreasPorPiso(pisoId: Int) {
@@ -116,7 +126,6 @@ class EquipoFormViewModel : ViewModel() {
 
                 } else {
 
-                    // 1. Crear el equipo y recuperar el id que Supabase generó
                     val creado = equipoRepository.crear(equipo)
                     val id = creado.id ?: throw Exception("Supabase no devolvió el ID del equipo creado")
 
@@ -133,9 +142,9 @@ class EquipoFormViewModel : ViewModel() {
                     equipoRepository.actualizar(id, equipoConQr)
                     equipoFinal = equipoConQr
                 }
-                registrarHistorialSiCambio(equipoAnterior, equipo)
+                registrarHistorialSiCambio(equipoAnterior, equipoFinal)
 
-                _guardado.value = Resource.Success(equipo)
+                _guardado.value = Resource.Success(equipoFinal)
 
             } catch (e: Exception) {
                 android.util.Log.e("GUARDAR_EQUIPO", "Error al guardar", e)
@@ -147,7 +156,25 @@ class EquipoFormViewModel : ViewModel() {
     }
     fun cargarEquipo(equipoId: Long) {
         viewModelScope.launch {
-            _equipoActual.value = equipoRepository.obtenerPorId(equipoId)
+            val equipo = equipoRepository.obtenerPorId(equipoId)
+            _equipoActual.value = equipo
+
+            val areaId = equipo?.areaId
+            if(areaId != null){
+                val areaDelEquipo = areaRepository.obtenerTodas().find{it.id == areaId}
+                val pisoDelEquipo = areaDelEquipo?.let {area ->
+                    pisoRepository.obtenerTodos().find { it.id == area.pisoId }
+                }
+                if(areaDelEquipo != null && pisoDelEquipo != null){
+                    _cadenaUbicacionEdicion.value = CadenaUbicacion(
+                        empresaId = pisoDelEquipo.empresaId,
+                        pisoId = pisoDelEquipo.id,
+                        areaId = areaDelEquipo.id
+
+                    )
+                }
+            }
+
         }
 
     }

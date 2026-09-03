@@ -46,6 +46,9 @@
     <string name="registrar_equipo_desc">Add new</string>
     <string name="estado_inventario">INVENTORY STATUS</string>
 
+    <string name="empresa">Company</string>
+
+
     <!-- Notifications -->
     <string name="notificaciones">Notifications</string>
     <string name="notif_bateria_alerta">Battery %1$s on Alert</string>

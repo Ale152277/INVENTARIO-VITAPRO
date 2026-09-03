@@ -13,7 +13,6 @@
         android:orientation="vertical"
         android:padding="20dp">
 
-        <!-- Header: título dinámico (Editar/Registrar) + botón cerrar -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -40,7 +39,6 @@
                 android:src="@drawable/ic_close" />
         </LinearLayout>
 
-        <!-- Sección: General -->
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -188,7 +186,6 @@
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
-        <!-- Sección: Especificaciones Técnicas -->
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -230,7 +227,6 @@
                             android:inputType="numberDecimal" />
                     </com.google.android.material.textfield.TextInputLayout>
 
-                    <!-- Unidad de potencia: Spinner, no texto libre (kW/kVA/HP) -->
                     <Spinner
                         android:id="@+id/spinnerPotenciaUnidad"
                         android:layout_width="90dp"
@@ -287,7 +283,6 @@
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
-        <!-- Sección: Ubicación y Estado -->
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -309,6 +304,21 @@
                     android:text="@string/seccion_ubicacion_estado"
                     android:textColor="@color/azul_medio"
                     android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:text="@string/empresa"
+                    android:textColor="@color/gris_texto"
+                    android:textSize="12sp" />
+                <Spinner
+                    android:id="@+id/spinnerEmpresa"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bg_opcion_acceso"
+                    android:minHeight="48dp" />
+
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -389,7 +399,6 @@
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
-        <!-- Botón guardar -->
         <LinearLayout
             android:id="@+id/btnGuardar"
             android:layout_width="match_parent"

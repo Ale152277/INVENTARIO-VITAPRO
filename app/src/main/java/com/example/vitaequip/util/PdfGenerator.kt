@@ -43,7 +43,7 @@ object PdfGenerator {
         printManager.print("historial_$nombreEquipo", adapter, atributos)
     }
 
-    private fun construirHtml(
+     fun construirHtml(
         detalle: EquipoDetalleUiModel,
         eventos: List<EventoHistorialUiModel>,
         reportes: List<ReporteIncidencia>

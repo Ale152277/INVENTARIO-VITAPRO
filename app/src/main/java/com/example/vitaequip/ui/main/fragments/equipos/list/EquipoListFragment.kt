@@ -17,6 +17,7 @@ import com.example.vitaequip.util.Constants
 import com.example.vitaequip.util.Resource
 import androidx.core.widget.addTextChangedListener
 import com.example.vitaequip.ui.equipos.form.EquipoFormDialogFragment
+import com.example.vitaequip.ui.main.fragments.equipos.detail.EquipoDetailDialogFragment
 import com.example.vitaequip.util.SessionManager
 
 class EquipoListFragment : Fragment() {
@@ -50,10 +51,8 @@ class EquipoListFragment : Fragment() {
             },
 
             onHistorialClick = {equipo ->
-                val intent = android.content.Intent(requireContext(), EquipoDetailActivity::class.java)
-                intent.putExtra(Constants.EXTRA_EQUIPO_ID, equipo.id)
-                startActivity(intent)
-
+                EquipoDetailDialogFragment.newInstance(equipoId = equipo.id )
+                    .show(childFragmentManager, "equipo_detail")
             }
         )
         childFragmentManager.setFragmentResultListener(Constants.RESULT_EQUIPO_GUARDADO, viewLifecycleOwner) { _, _ ->

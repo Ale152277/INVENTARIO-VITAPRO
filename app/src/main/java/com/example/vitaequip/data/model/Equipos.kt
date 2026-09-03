@@ -43,6 +43,7 @@ data class Equipo(
     val potenciaUnidad: String? = null,
     @SerialName("potencia_valor")
     val potenciaValor: Double? = null,
+    @SerialName("empresa_id")
+    val empresaId: Int? = null,
 
-
-    )
+)

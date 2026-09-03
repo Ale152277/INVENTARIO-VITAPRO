@@ -8,4 +8,5 @@ object Constants {
 
     const val RESULT_EQUIPO_GUARDADO = "equipo_guardado"
 
+
 }
