@@ -1,0 +1,15 @@
+02/09/2026 | MIERCOLES
+
+1.  Introduce los modelos Empresa y CadenaUbicacion, junto con un EmpresaRepository.
+    Añade empresa_id a los modelos Piso y Equipo, así como el método PisoRepository.obtenerPorEmpresa.
+
+2.  Actualiza EquipoFormViewModel para cargar las empresas, proporcionar cargarPisosPorEmpresa
+    y exponer la cadena de ubicación para realizar la preselección al editar.
+
+3.  Mejora EquipoFormDialogFragment para añadir un selector (Spinner) de Empresa,
+    cargar en cascada los pisos/áreas y mejorar la lógica de preselección y selección de los Spinner.
+
+4.  Añade EquipoDetailDialogFragment y su layout para mostrar/imprimir el historial del equipo (haciendo público PdfGenerator.construirHtml).
+
+5.  Añade las cadenas de texto relacionadas y realiza las conexiones necesarias
+    (al seleccionar un elemento de la lista, se abre el diálogo de detalle).
