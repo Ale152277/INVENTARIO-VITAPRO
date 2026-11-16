@@ -45,5 +45,8 @@ data class Equipo(
     val potenciaValor: Double? = null,
     @SerialName("empresa_id")
     val empresaId: Int? = null,
+    @SerialName("incluye_banco_baterias")
+    val incluyeBancoBaterias: Boolean = false,
 
-)
+
+    )

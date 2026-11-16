@@ -52,7 +52,11 @@ class LoginActivity : AppCompatActivity() {
 
                 is Resource.Success ->{
                     binding.progressLogin.visibility = android.view.View.GONE
-                    startActivity(Intent(this, MainActivity::class.java))
+
+                    val intent = Intent(this, MainActivity::class.java).apply {
+                        flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+                    }
+                    startActivity(intent)
                     finish()
                 }
 

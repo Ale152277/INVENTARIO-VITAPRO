@@ -28,34 +28,26 @@ import java.util.Locale
 
 
 
+
 class EquipoFormDialogFragment : DialogFragment() {
 
     private var _binding : FragmentEquipoFormDialogBinding? = null
     private val binding get() = _binding!!
-
     private val viewModel: EquipoFormViewModel by viewModels()
-
     private var listaMarcas: List<Marcas> = emptyList()
     private var listaPisos: List<Piso> = emptyList()
     private var listaAreas: List<Area> = emptyList()
     private var listaEstados: List<Estados> = emptyList()
-
     private var equipoId : Long? = null
     private var esEdicion = false
-
     private var equipoCargado: Equipo? = null
-
     private val formatoDisplay = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
     private val formatoSupabase = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-
     private var imagenUriSeleccionada: android.net.Uri? = null
     private var imagenUrlSubida: String? = null
-
     private var listaEmpresas: List<Empresa> = emptyList()
-
     private var empresaIdAPreseleccionar: Int? = null
     private var pisoIdAPreseleccionar: Int? = null
-
     private val pickMedia = registerForActivityResult(
         androidx.activity.result.contract.ActivityResultContracts.PickVisualMedia()
     ) { uri ->
@@ -66,9 +58,7 @@ class EquipoFormDialogFragment : DialogFragment() {
         }
     }
     companion object{
-
         private const val ARG_EQUIPO_ID = "arg_equipo_id"
-
         fun newInstance(equipoId: Long?): EquipoFormDialogFragment{
             val fragment = EquipoFormDialogFragment()
             val args = Bundle()
@@ -77,25 +67,19 @@ class EquipoFormDialogFragment : DialogFragment() {
             return fragment
         }
     }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         equipoId = arguments?.let {
             if (it.containsKey(ARG_EQUIPO_ID)) it.getLong(ARG_EQUIPO_ID) else null
-
         }
         esEdicion = equipoId != null
     }
-
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentEquipoFormDialogBinding.inflate(inflater, container,false)
-
         return binding.root
     }
 
@@ -115,7 +99,6 @@ class EquipoFormDialogFragment : DialogFragment() {
             if(esEdicion) R.string.editar_equipo else R.string.registrar_equipo_titulo
         )
         binding.btnCerrar.setOnClickListener { dismiss() }
-
         binding.btnSeleccionarImagen.setOnClickListener {
             pickMedia.launch(
                 androidx.activity.result.PickVisualMediaRequest(
@@ -123,26 +106,58 @@ class EquipoFormDialogFragment : DialogFragment() {
                 )
             )
         }
-
         configurarSpinnerPotenciaUnidad()
         configurarDatePickers()
         configurarObservers()
         configurarBotonGuardar()
-
-        equipoId?.let { viewModel.cargarEquipo(it) }
+        configurarSeccionBancoBateria()
+        equipoId?.let {
+            viewModel.cargarEquipo(it)
+            viewModel.cargarBancosBateria(it)
+        }
         viewModel.cargarCatalogos()
-
     }
-
     private fun configurarSpinnerPotenciaUnidad(){
         val unidades = resources.getStringArray(R.array.unidades_potencia)
         binding.spinnerPotenciaUnidad.adapter= ArrayAdapter(
             requireContext(), android.R.layout.simple_spinner_item, unidades
         )
+    }
+    private fun configurarSeccionBancoBateria(){
+        binding.banco1.tvTituloBanco.text = "Banco 1"
+        binding.banco2.tvTituloBanco.text = "Banco 2"
+        binding.banco3.tvTituloBanco.text = "Banco 3"
+
+        binding.spinnerCantidadBancos.adapter = ArrayAdapter(
+            requireContext(), android.R.layout.simple_spinner_item, listOf("1","2", "3")
+        )
+
+        binding.rgIncluyeBanco.setOnCheckedChangeListener { _, checkedId ->
+            val incluye = checkedId == binding.rbBancoSi.id
+            binding.contenedorCantidadBanco.visibility = if(incluye) View.VISIBLE else View.GONE
+            if(incluye){
+                actualizarBancosVisibles(binding.spinnerCantidadBancos.selectedItemPosition + 1)
+
+            }else{
+                actualizarBancosVisibles(0)
+            }
+
+            binding.spinnerCantidadBancos.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
+                override fun onItemSelected(p0: AdapterView<*>?, v: View?, pos: Int, id: Long) {
+                    actualizarBancosVisibles (pos + 1)
+                }
+                override fun onNothingSelected(p0: AdapterView<*>?) {}
+            }
+        }
 
 
     }
 
+    private fun actualizarBancosVisibles(cantidad: Int) {
+        binding.banco1.root.visibility = if (cantidad >= 1) View.VISIBLE else View.GONE
+        binding.banco2.root.visibility = if (cantidad >= 2) View.VISIBLE else View.GONE
+        binding.banco3.root.visibility = if (cantidad >= 3) View.VISIBLE else View.GONE
+    }
     private fun configurarDatePickers(){
         val formato = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
 
@@ -150,10 +165,8 @@ class EquipoFormDialogFragment : DialogFragment() {
             mostrarDatePicker(binding.etFechaUltimoMantenimiento.text.toString(), formato ){
                     fecha ->
                 binding.etFechaUltimoMantenimiento.setText(fecha)
-
             }
         }
-
         binding.etFechaProximoMantenimiento.setOnClickListener {
             mostrarDatePicker(binding.etFechaProximoMantenimiento.text.toString(), formato){
                     fecha ->
@@ -161,18 +174,14 @@ class EquipoFormDialogFragment : DialogFragment() {
             }
         }
     }
-
-
     private fun aFormatoSupabase(fechaDisplay: String): String? {
         if (fechaDisplay.isBlank()) return null
         return runCatching { formatoDisplay.parse(fechaDisplay)?.let { formatoSupabase.format(it) } }.getOrNull()
     }
-
     private fun aFormatoDisplay(fechaSupabase: String?): String {
         if (fechaSupabase.isNullOrBlank()) return ""
         return runCatching { formatoSupabase.parse(fechaSupabase)?.let { formatoDisplay.format(it) } }.getOrNull() ?: fechaSupabase
     }
-
     private fun mostrarDatePicker(
         valorActual: String,
         formato: SimpleDateFormat,
@@ -192,10 +201,7 @@ class EquipoFormDialogFragment : DialogFragment() {
             calendar.get(Calendar.MONTH),
             calendar.get(Calendar.DAY_OF_MONTH)
         ).show()
-
     }
-
-
     private fun configurarObservers() {
 
         // 1. Ubicación previa en edición
@@ -206,7 +212,6 @@ class EquipoFormDialogFragment : DialogFragment() {
                 seleccionarEnSpinner(binding.spinnerEmpresa, listaEmpresas, it.empresaId)
             }
         }
-
         // 2. Marcas
         viewModel.marcas.observe(viewLifecycleOwner) { marcas ->
             listaMarcas = marcas
@@ -215,7 +220,6 @@ class EquipoFormDialogFragment : DialogFragment() {
             binding.spinnerMarca.adapter = adapter
             seleccionarEnSpinner(binding.spinnerMarca, marcas, equipoCargado?.marcaId)
         }
-
         // 3. Empresas
         viewModel.empresas.observe(viewLifecycleOwner) { empresas ->
             listaEmpresas = empresas
@@ -232,7 +236,7 @@ class EquipoFormDialogFragment : DialogFragment() {
                 binding.spinnerEmpresa.setSelection(0, false)
             }
 
-            // Asignar listener DESPUÉS de establecer la selección inicial
+            // asignar listener despues de establecer la selección inicial
             binding.spinnerEmpresa.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
                 override fun onItemSelected(p0: AdapterView<*>?, v: View?, pos: Int, id: Long) {
                     empresas.getOrNull(pos)?.let { viewModel.cargarPisosPorEmpresa(it.id) }
@@ -240,13 +244,12 @@ class EquipoFormDialogFragment : DialogFragment() {
                 override fun onNothingSelected(p0: AdapterView<*>?) {}
             }
 
-            // Disparar carga de Pisos manualmente para la posición actual
+            // disparar carga de pisos manualmente para la posición actual
             val posicion = binding.spinnerEmpresa.selectedItemPosition
             if (posicion in empresas.indices) {
                 viewModel.cargarPisosPorEmpresa(empresas[posicion].id)
             }
         }
-
         // 4. Pisos
         viewModel.pisos.observe(viewLifecycleOwner) { pisos ->
             listaPisos = pisos
@@ -255,7 +258,6 @@ class EquipoFormDialogFragment : DialogFragment() {
             binding.spinnerPiso.adapter = adapter
 
             binding.spinnerPiso.onItemSelectedListener = null
-
             if (pisoIdAPreseleccionar != null) {
                 seleccionarEnSpinner(binding.spinnerPiso, pisos, pisoIdAPreseleccionar)
                 pisoIdAPreseleccionar = null // Resetear para no bloquear selecciones manuales futuras
@@ -314,6 +316,9 @@ class EquipoFormDialogFragment : DialogFragment() {
                 else -> Unit
             }
         }
+
+        viewModel.bancoBateria.observe(viewLifecycleOwner){bancos ->
+            prellenarBancos(bancos)}
     }
 
     private fun <T> seleccionarEnSpinner(spinner: Spinner, lista: List<T>, idGuardado: Int?){
@@ -331,7 +336,6 @@ class EquipoFormDialogFragment : DialogFragment() {
         }
         if (posicion >= 0) spinner.setSelection(posicion)
     }
-
     private fun prellenarFormulario(equipo: Equipo) {
         binding.etCodigo.setText(equipo.codigo)
         binding.etDescripcion.setText(equipo.descripcion)
@@ -362,12 +366,36 @@ class EquipoFormDialogFragment : DialogFragment() {
         seleccionarEnSpinner(binding.spinnerEstado, listaEstados, equipo.estadoId)
     }
 
+    private fun prellenarBancos(bancos: List<EquipoBancoBateria>){
+        if(bancos.isEmpty()){
+            binding.rgIncluyeBanco.check(binding.rbBancoNo.id)
+            return
+        }
+
+        binding.rgIncluyeBanco.check(binding.rbBancoSi.id)
+        binding.spinnerCantidadBancos.setSelection(bancos.size - 1)
+        actualizarBancosVisibles(bancos.size)
+
+        val bloques = listOf(
+            binding.banco1,
+            binding.banco2,
+            binding.banco3
+        )
+        bancos.sortedBy { it.numeroBanco }.forEachIndexed { index, banco ->
+            bloques[index].etVoltajeBanco.setText(banco.bateriaVoltaje?.toString() ?: "")
+            bloques[index].etAmperajeBanco.setText(banco.bateriaAmperaje?.toString() ?: "")
+            bloques[index].etCantidadBanco.setText(banco.bateriaCantidad?.toString() ?: "")
+
+        }
+    }
+
     private fun configurarBotonGuardar() {
         binding.btnGuardar.setOnClickListener {
             val marcaSeleccionada = listaMarcas.getOrNull(binding.spinnerMarca.selectedItemPosition)
             val areaSeleccionada = listaAreas.getOrNull(binding.spinnerArea.selectedItemPosition)
             val estadoSeleccionado = listaEstados.getOrNull(binding.spinnerEstado.selectedItemPosition)
-
+            val incluyeBanco = binding.rgIncluyeBanco.checkedRadioButtonId == binding.rbBancoSi.id
+            val bancos = leerBancosDesdeFormulario()
 
 
             val unidadSeleccionada = resources.getStringArray(R.array.unidades_potencia)
@@ -397,9 +425,29 @@ class EquipoFormDialogFragment : DialogFragment() {
                 serie = binding.etSerie.text.toString().trim().ifBlank { null },
                 inventario = binding.etInventario.text.toString().ifBlank { null } ,
                 imagenUrl = imagenUrlSubida ?: equipoCargado?.imagenUrl,
+                incluyeBancoBaterias = incluyeBanco,
+
             )
 
-            viewModel.guardarEquipo(equipo, esEdicion)
+            viewModel.guardarEquipo(equipo, esEdicion, bancos)
+        }
+    }
+
+    private fun leerBancosDesdeFormulario(): List<EquipoBancoBateria>{
+        if(binding.rgIncluyeBanco.checkedRadioButtonId != binding.rbBancoSi.id){
+            return emptyList()
+        }
+        val cantidad = binding.spinnerCantidadBancos.selectedItemPosition + 1
+        val bloques = listOf(binding.banco1, binding.banco2, binding.banco3).take(cantidad)
+
+        return bloques.mapIndexed { index, bloque ->
+            EquipoBancoBateria(
+                equipoId = 0L, // se reemplaza en el viewmodel una vez que se conoce el id real del equipo
+                numeroBanco = index + 1,
+                bateriaVoltaje = bloque.etVoltajeBanco.text.toString().toDoubleOrNull(),
+                bateriaAmperaje = bloque.etAmperajeBanco.text.toString().toDoubleOrNull(),
+                bateriaCantidad = bloque.etCantidadBanco.text.toString().toIntOrNull()
+            )
         }
     }
 

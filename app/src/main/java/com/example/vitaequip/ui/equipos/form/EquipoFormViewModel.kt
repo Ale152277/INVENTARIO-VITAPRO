@@ -21,6 +21,8 @@ class EquipoFormViewModel : ViewModel() {
     private val empresaRepository = EmpresaRepository()
     private val historialEquipoRepository = EquipoHistorialEstadoRepository()
     private val historailUbicacionRepository = EquipoHisUbiRepository()
+    private val bancoBateriaRepository = EquipoBancoBateriaRepository()
+
     private val _pisos = MutableLiveData<List<Piso>>()
     val pisos: LiveData<List<Piso>> = _pisos
 
@@ -44,6 +46,9 @@ class EquipoFormViewModel : ViewModel() {
 
     private val _cadenaUbicacionEdicion = MutableLiveData<CadenaUbicacion?>()
     val cadenaUbicacionEdicion: LiveData<CadenaUbicacion?> = _cadenaUbicacionEdicion
+
+    private val _bancoBateria = MutableLiveData<List<EquipoBancoBateria>>()
+    val bancoBateria : LiveData<List<EquipoBancoBateria>> = _bancoBateria
 
 
     private suspend fun registrarHistorialSiCambio(anterior: Equipo?, actual : Equipo){
@@ -98,7 +103,7 @@ class EquipoFormViewModel : ViewModel() {
 
     }
 
-    fun guardarEquipo(equipo: Equipo, esEdicion: Boolean) {
+    fun guardarEquipo(equipo: Equipo, esEdicion: Boolean, bancos: List<EquipoBancoBateria>) {
 
         val errorCodigo = EquipoFormValidator.validarCodigo(equipo.codigo)
         val errorDescripcion = EquipoFormValidator.validarDescripcion(equipo.descripcion)
@@ -142,6 +147,12 @@ class EquipoFormViewModel : ViewModel() {
                     equipoRepository.actualizar(id, equipoConQr)
                     equipoFinal = equipoConQr
                 }
+
+                val idEquipo = equipoFinal.id
+                if (idEquipo != null) {
+                    val bancosConId = bancos.map { it.copy(equipoId = idEquipo) }
+                    bancoBateriaRepository.reemplazarBancos(idEquipo, bancosConId)
+                }
                 registrarHistorialSiCambio(equipoAnterior, equipoFinal)
 
                 _guardado.value = Resource.Success(equipoFinal)
@@ -177,5 +188,11 @@ class EquipoFormViewModel : ViewModel() {
 
         }
 
+    }
+
+    fun cargarBancosBateria(equipoId: Long){
+        viewModelScope.launch {
+            _bancoBateria.value = bancoBateriaRepository.obtenerPorEquipo(equipoId)
+        }
     }
 }

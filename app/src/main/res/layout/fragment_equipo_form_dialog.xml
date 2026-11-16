@@ -77,6 +77,7 @@
                         android:layout_marginTop="8dp"
                         android:clickable="true"
                         android:focusable="true"
+                        android:minHeight="48dp"
                         android:text="@string/seleccionar_imagen"
                         android:textColor="@color/azul_medio"
                         android:textStyle="bold" />
@@ -280,7 +281,86 @@
                         android:layout_height="wrap_content"
                         android:inputType="number" />
                 </com.google.android.material.textfield.TextInputLayout>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/label_incluye_bancos"
+                    android:layout_marginTop="8dp"/>
+                <RadioGroup
+                    android:id="@+id/rgIncluyeBanco"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:orientation="horizontal">
+
+                    <RadioButton
+                        android:id="@+id/rbBancoSi"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="24dp"
+                        android:text="@string/label_si" />
+
+                    <RadioButton
+                        android:id="@+id/rbBancoNo"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:checked="true"
+                        android:text="@string/label_no" />
+                </RadioGroup>
+
+
+                <LinearLayout
+                    android:id="@+id/contenedorCantidadBanco"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:orientation="vertical"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/label_cantidad_bancos"
+                        android:textColor="@color/gris_texto"
+                        android:textSize="12sp" />
+
+                    <Spinner
+                        android:id="@+id/spinnerCantidadBancos"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/bg_opcion_acceso"
+                        android:minHeight="48dp" />
+                </LinearLayout>
+                <include
+                    android:id="@+id/banco1"
+                    layout="@layout/layout_banco_bateria_campos"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="14dp"
+                    android:visibility="gone" />
+
+                <include
+                    android:id="@+id/banco2"
+                    layout="@layout/layout_banco_bateria_campos"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="14dp"
+                    android:visibility="gone" />
+
+                <include
+                    android:id="@+id/banco3"
+                    layout="@layout/layout_banco_bateria_campos"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="14dp"
+                    android:visibility="gone" />
+
             </LinearLayout>
+
+            
+
+            
         </com.google.android.material.card.MaterialCardView>
 
         <com.google.android.material.card.MaterialCardView

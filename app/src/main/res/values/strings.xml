@@ -138,7 +138,10 @@
     <string name="label_alertas">Alertas</string>
     <string name="label_qr_scanner">QR Scanner</string>
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="label_incluye_bancos">¿Incluye bancos de baterias?</string>
+    <string name="label_si">Si</string>
+    <string name="label_no">No</string>
+    <string name="label_cantidad_bancos">Cantidad de bancos</string>
 
 
 </resources>
