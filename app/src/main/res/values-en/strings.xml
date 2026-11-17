@@ -143,6 +143,8 @@
     <string name="label_si">Yes</string>
     <string name="label_no">No</string>
     <string name="label_cantidad_bancos">banks amounts</string>
+    <string name="error_empresa_obligatoria">You must select a company</string>
+
 
 
 

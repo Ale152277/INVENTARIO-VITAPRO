@@ -394,6 +394,18 @@ class EquipoFormDialogFragment : DialogFragment() {
             val marcaSeleccionada = listaMarcas.getOrNull(binding.spinnerMarca.selectedItemPosition)
             val areaSeleccionada = listaAreas.getOrNull(binding.spinnerArea.selectedItemPosition)
             val estadoSeleccionado = listaEstados.getOrNull(binding.spinnerEstado.selectedItemPosition)
+            val empresaSeleccionada = listaEmpresas.getOrNull(binding.spinnerEmpresa.selectedItemPosition)
+
+            if(empresaSeleccionada == null){
+                Toast.makeText(
+                    requireContext(),
+                    R.string.error_empresa_obligatoria,
+                    Toast.LENGTH_SHORT
+                ).show()
+
+                return@setOnClickListener
+            }
+
             val incluyeBanco = binding.rgIncluyeBanco.checkedRadioButtonId == binding.rbBancoSi.id
             val bancos = leerBancosDesdeFormulario()
 
@@ -426,6 +438,7 @@ class EquipoFormDialogFragment : DialogFragment() {
                 inventario = binding.etInventario.text.toString().ifBlank { null } ,
                 imagenUrl = imagenUrlSubida ?: equipoCargado?.imagenUrl,
                 incluyeBancoBaterias = incluyeBanco,
+                empresaId = empresaSeleccionada.id
 
             )
 
